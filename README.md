@@ -1,6 +1,6 @@
 # Track Train Eat
 
-Diese Readme dient aktuell als erläuterung der Idee und um feinheiten zu dokumentieren
+Diese Readme dient aktuell als erläuterung der Idee und um Feinheiten zu dokumentieren
 ---
 
 ## Grundidee
