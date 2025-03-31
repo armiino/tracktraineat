@@ -39,10 +39,10 @@
   } else if (goal === 'gainMuscle') {
     total *= 1.1;
   } else if (goal === 'noChange') {
-     total === total;
+     total = total;
   }
-  console.log(total);  
-  console.log(goal);
+  //console.log(total);  
+  //console.log(goal);
 
   return Math.round(total);
 };
