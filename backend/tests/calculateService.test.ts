@@ -1,8 +1,9 @@
-const { calculateCalories } = require('../service/calculateService');
+import { calculateCalories } from '../service/calculateService';
+import { CalorieInput } from '../service/calculateService'; 
 
 describe('calculateCalories()', () => {
   it('erster Test für männlich, medium aktiv und ziel gainMuscle', () => {
-    const result = calculateCalories({
+    const input: CalorieInput = {
       weight: 75,
       height: 180,
       age: 25,
@@ -10,14 +11,16 @@ describe('calculateCalories()', () => {
       activity: 'medium',
       goal: 'gainMuscle',
       burned: 200
-    });
+    };
+
+    const result = calculateCalories(input);
 
     expect(result).toBeGreaterThan(2500);
     expect(typeof result).toBe('number');
   });
 
   it('keine verbrannten kalorien', () => {
-    const result = calculateCalories({
+    const input: CalorieInput = {
       weight: 70,
       height: 175,
       age: 30,
@@ -25,15 +28,16 @@ describe('calculateCalories()', () => {
       activity: 'low',
       goal: 'noChange',
       burned: 0
-    });
+    };
+
+    const result = calculateCalories(input);
 
     expect(result).toBeGreaterThan(1000);
     expect(typeof result).toBe('number');
   });
-  
 
   it('loseweight sollte kleiner sein als noChange', () => {
-    const resultNormal = calculateCalories({
+    const normal = calculateCalories({
       weight: 80,
       height: 185,
       age: 28,
@@ -43,7 +47,7 @@ describe('calculateCalories()', () => {
       burned: 0
     });
 
-    const resultLoseWeight = calculateCalories({
+    const cut = calculateCalories({
       weight: 80,
       height: 185,
       age: 28,
@@ -53,7 +57,7 @@ describe('calculateCalories()', () => {
       burned: 0
     });
 
-    expect(resultLoseWeight).toBeLessThan(resultNormal);
+    expect(cut).toBeLessThan(normal);
   });
 
   it('kalorien mit acktivity superhigh', () => {
@@ -77,10 +81,10 @@ describe('calculateCalories()', () => {
       age: 25,
       gender: 'male',
       activity: 'high',
-      goal: 'noChange', 
-      burned: 0          
+      goal: 'noChange',
+      burned: 0
     });
-  
+
     expect(result).toBeGreaterThan(0);
   });
 
@@ -94,8 +98,7 @@ describe('calculateCalories()', () => {
       goal: 'noChange',
       burned: 0
     });
-  
+
     expect(result).toBeGreaterThan(1000);
   });
-
 });
