@@ -11,6 +11,7 @@ export class AuthController {
     const dto = new RegisterUserDTO();
     dto.email = req.body.email;
     dto.password = req.body.password;
+   // console.log(req.body);
 
     // validierung: sind alle Decorators aus der dto klasse korrekt? (isEmail() etc..)
     const errors = await validate(dto);
@@ -61,7 +62,14 @@ export class AuthController {
     try {
       // lgoin von authService liefert einen JWTToken -> für später und für middleware 
       const token = await authService.login(dto.email, dto.password);
-      res.status(200).json({ token });
+      //hiermit wird der token im cookie gespeichert und automatisch bei den nächsten requests mitgesendet (zB bei postman tests)
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: false, 
+        sameSite: 'lax',
+      });
+      res.status(200).json({ message: 'AuthControllerInfo: login succesfull' });
+  
     } catch (error: any) {
       res.status(401).json({ error: error.message });
     }
