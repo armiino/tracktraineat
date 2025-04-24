@@ -4,6 +4,7 @@ import express, { Request, Response } from 'express';
 import calculateRoute from './route/calculateRoute';
 import authRoute from './route/authRoute';
 import testMiddlewareRoute from './route/testMiddlewareRoute'; // TODO: wieder entfernen - dient nur zu testzwecken der Middleware
+import userProfileRoute from './route/userProfileRoute';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -13,8 +14,9 @@ app.use(express.json());
 
 app.use(cookieParser()); 
 
-app.use('/api', calculateRoute);
-app.use('/auth', authRoute);
+app.use('/api', calculateRoute); //offener endpunkt und kalulkuliert den Gesamtumsatz
+app.use('/api', userProfileRoute); //profil anlegen oder updaten
+app.use('/auth', authRoute); //register und login
 app.use('/test', testMiddlewareRoute); // TODO: wieder entfernen
 
 //kurzer test obs läuft
