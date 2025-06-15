@@ -1,4 +1,4 @@
-import { IsInt, IsIn, IsNumber, Min, Max, IsOptional } from 'class-validator';
+import { IsInt, IsIn, IsNumber, Min, Max, IsOptional, IsArray, ArrayMinSize, ArrayMaxSize } from 'class-validator';
 
 export class UserProfileDto {
     @IsNumber()
@@ -22,7 +22,7 @@ export class UserProfileDto {
     goal!: 'loseWeight' | 'gainMuscle' | 'noChange';
   
     @IsOptional()
-    @IsNumber()
-    burned?: number; //verbrannte kalorien optional.. wird ja dann in der calculate funktion verwendet aber muss nicht wirklich geliefert werden..
+    @IsIn(['omnivore', 'vegetarian', 'vegan'])
+    dietType: 'omnivore' | 'vegetarian' | 'vegan' = 'omnivore';
   }
   

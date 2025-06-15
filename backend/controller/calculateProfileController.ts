@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { userProfileService } from '../service/userProfileService';
-import { calculateCalories } from '../service/calculateService';
 
 export class CalculateProfileController {
   async calculateFromProfile(req: Request, res: Response): Promise<void> {
@@ -13,7 +12,7 @@ export class CalculateProfileController {
       return;
     }
 
-    const totalCalories = calculateCalories(profile);
+    const totalCalories = profile.calculateCaloriesProfile();
     res.status(200).json({ totalCalories });
   }
 }

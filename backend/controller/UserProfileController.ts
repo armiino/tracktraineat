@@ -4,7 +4,6 @@ import { UserProfileDto } from '../dto/UserProfileDto';
 import { userProfileService } from '../service/userProfileService';
 
 export class UserProfileController {
-  // creatProfile legt ein Profil an 
   async createProfile(req: Request, res: Response): Promise<void> {
     const dto = new UserProfileDto();
     dto.age = req.body.age;
@@ -13,7 +12,7 @@ export class UserProfileController {
     dto.gender = req.body.gender;
     dto.activity = req.body.activity;
     dto.goal = req.body.goal;
-    dto.burned = req.body.burned;
+ // dto.burned = req.body.burned;
 
     const errors = await validate(dto);
     if (errors.length > 0) {
@@ -48,7 +47,7 @@ export class UserProfileController {
     dto.gender = req.body.gender;
     dto.activity = req.body.activity;
     dto.goal = req.body.goal;
-    dto.burned = req.body.burned;
+   // dto.burned = req.body.burned;
   
     const errors = await validate(dto);
     if (errors.length > 0) {
@@ -79,7 +78,7 @@ export class UserProfileController {
     try {
       const profile = userProfileService.getProfile(userId);
       if (!profile) {
-        res.status(404).json({ error: 'Kein Profil gefunden' });
+        res.status(404).json({ error: 'no profile found' });
         return;
       }
       res.status(200).json(profile);

@@ -5,7 +5,7 @@ import { CalculateProfileController } from '../controller/calculateProfileContro
 const router = express.Router();
 const controller = new CalculateProfileController();
 
-// GET /api/calculate/profile(nur für eingeloggte User desw reqzire auth)
+// GET /api/calculate/profile(nur für eingeloggte User desw require auth)
 router.get('/calculate/profile', requireAuth, (req, res) => {
   controller.calculateFromProfile(req, res);
 });

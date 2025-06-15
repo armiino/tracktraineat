@@ -5,6 +5,12 @@ const profiles: UserProfile[] = []; //TODO: array funkton weg -> DB
 
 export const userProfileService = {
   createProfile(userId: string, dto: UserProfileDto): UserProfile {
+
+    //wenn muskelaufbau gesetzt -> mehr protein pro kg körpergewicht
+ //   if (dto.goal === 'gainMuscle') {
+ //     dto.proteinPerKg = 2.0;
+ //   }
+
     const profile = new UserProfile(
       userId,
       dto.weight,
@@ -13,7 +19,9 @@ export const userProfileService = {
       dto.gender,
       dto.activity,
       dto.goal,
-      dto.burned
+  //    dto.burned,
+  //    dto.proteinPerKg,
+   //   dto.dietType
     );
 
     if (profiles.find(p => p.userId === userId)) {
@@ -43,7 +51,9 @@ export const userProfileService = {
       dto.gender,
       dto.activity,
       dto.goal,
-      dto.burned
+   //   dto.burned,
+  //    dto.proteinPerKg,
+  //    dto.dietType
     );
   
     profiles[profileIndex] = updated;
