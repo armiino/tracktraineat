@@ -1,10 +1,14 @@
-import { userProfileService } from './userProfileService';
 import { RecipePort } from '../port/RecipePort';
 import { RecipeQueryDto } from '../dto/RecipeQueryDto';
+import { userProfileService } from './userProfileService';
+export type UserProfileService = ReturnType<typeof userProfileService>;
 
-export const recipeService = (recipeProvider: RecipePort) => ({
+export const recipeService = (
+  recipeProvider: RecipePort,
+  userProfileService: UserProfileService
+) => ({
   async getRecipesForUser(userId: string) {
-    const profile = userProfileService.getProfile(userId);
+    const profile = await userProfileService.getProfile(userId);
     if (!profile) throw new Error('Kein Profil vorhanden');
 
     const totalCalories = profile.calculateCaloriesProfile();
@@ -20,7 +24,7 @@ export const recipeService = (recipeProvider: RecipePort) => ({
   },
 
   async getMealPlan(userId: string, dto: RecipeQueryDto) {
-    const profile = userProfileService.getProfile(userId);
+    const profile = await userProfileService.getProfile(userId);
     if (!profile) throw new Error('Kein Profil vorhanden');
 
     const totalCalories = profile.calculateCaloriesProfile(dto.burned);
