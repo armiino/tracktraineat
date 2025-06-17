@@ -31,4 +31,13 @@ export class User {
     const id = crypto.randomUUID(); // später db id ?? - aktuell random generiert
     return new User(id, email, hashed, 'user');
   }
+  //methode die alles liefert für DB
+  toPersistence() {
+    return {
+      id: this.id,
+      email: this.email,
+      passwordHash: this.passwordHash,
+      role: this.role
+    };
+  }
 }
