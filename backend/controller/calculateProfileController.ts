@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
-import { userProfileService } from '../service/userProfileService';
 
 export class CalculateProfileController {
+  constructor(
+    private readonly userProfileService: ReturnType<typeof import('../service/userProfileService').userProfileService>
+  ) {}
+
   async calculateFromProfile(req: Request, res: Response): Promise<void> {
     const userId = (req as any).user?.id;
 
-    const profile = userProfileService.getProfile(userId);
+    const profile = await this.userProfileService.getProfile(userId);
 
     if (!profile) {
       res.status(404).json({ error: 'no profile found' });
