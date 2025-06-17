@@ -1,13 +1,15 @@
 import express from 'express';
-import { requireAuth } from '../middleware/authMiddleware';
 import { CalculateProfileController } from '../controller/calculateProfileController';
+import { PostgresUserProfileAdapter } from '../adapter/PostgresUserProfileAdapter';
+import { userProfileService } from '../service/userProfileService';
+import { requireAuth } from '../middleware/authMiddleware';
 
 const router = express.Router();
-const controller = new CalculateProfileController();
 
-// GET /api/calculate/profile(nur für eingeloggte User desw require auth)
-router.get('/calculate/profile', requireAuth, (req, res) => {
-  controller.calculateFromProfile(req, res);
-});
+const adapter = new PostgresUserProfileAdapter();
+const service = userProfileService(adapter);
+const controller = new CalculateProfileController(service);
+
+router.get('/calculate/from-profile', requireAuth, (req, res) => controller.calculateFromProfile(req, res));
 
 export default router;

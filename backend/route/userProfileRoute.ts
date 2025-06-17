@@ -1,24 +1,19 @@
 import express from 'express';
+import { PostgresUserProfileAdapter } from '../adapter/PostgresUserProfileAdapter';
+import { userProfileService } from '../service/userProfileService';
 import { UserProfileController } from '../controller/UserProfileController';
 import { requireAuth } from '../middleware/authMiddleware';
 
-const router = express.Router();
-const controller = new UserProfileController();
+export const createUserProfileRoute = () => {
+  const adapter = new PostgresUserProfileAdapter();
+  const service = userProfileService(adapter);
+  const controller = new UserProfileController(service);
 
-// GET /api/profile -> Profil holen (nur eingeloggt)
-router.get('/profile', requireAuth, (req, res) => {
-  controller.getProfile(req, res);
-});
+  const router = express.Router();
 
-// POST /api/profile -> Profil anlegen/aktualisieren (nur eingeloggt)
-router.post('/profile', requireAuth, (req, res) => {
-  controller.createProfile(req, res);
-});
+  router.get('/profile', requireAuth, (req, res) => controller.getProfile(req, res));
+  router.post('/profile', requireAuth, (req, res) => controller.createProfile(req, res));
+  router.put('/profile', requireAuth, (req, res) => controller.updateProfile(req, res));
 
-// PUT /api/profile -> Profil aktualisieren (nur eingeloggt)
-router.put('/profile', requireAuth, (req, res) => {
-    controller.updateProfile(req, res);
-  });
-  
-
-export default router;
+  return router;
+};
