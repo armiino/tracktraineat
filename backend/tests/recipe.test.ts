@@ -1,19 +1,28 @@
+import dotenv from 'dotenv';
+dotenv.config(); // Muss GANZ oben stehen, damit Prisma auf DATABASE_URL zugreifen kann
+
 import request from 'supertest';
-import app from '../index'; // Passe das ggf. an, falls du dein Express-App anders exportierst
+import app from '../index';
+import { PrismaClient } from '@prisma/client';
 
-describe('🍽️ /api/mealplan', () => {
+const prisma = new PrismaClient();
+
+describe('/api/mealplan', () => {
   let cookie: string;
-
   const email = 'mealuser@test.de';
   const password = 'test123';
 
   beforeAll(async () => {
-    // 1. Registrieren
+    // Datenbank vorbereiten,zuerst alles löschen
+    await prisma.userProfile.deleteMany({});
+    await prisma.user.deleteMany({});
+
+    // Registrierung
     await request(app)
       .post('/auth/register')
       .send({ email, password });
 
-    // 2. Login (Cookie speichern)
+    // Login und Cookie speichern
     const res = await request(app)
       .post('/auth/login')
       .send({ email, password });
@@ -21,8 +30,13 @@ describe('🍽️ /api/mealplan', () => {
     cookie = res.headers['set-cookie'][0];
   });
 
-  it('✅ liefert einen Mealplan für ein gültiges Profil', async () => {
-    // 3. Profil anlegen
+  afterAll(async () => {
+    // Verbindung schließen, damit Jest korrekt beendet (fehler verhindern)
+    await prisma.$disconnect();
+  });
+
+  it('liefert einen Mealplan für ein gültiges Profil', async () => {
+    // Profil anlegen
     await request(app)
       .post('/api/profile')
       .set('Cookie', cookie)
@@ -36,7 +50,7 @@ describe('🍽️ /api/mealplan', () => {
         dietType: 'omnivore'
       });
 
-    // 4. Mealplan anfordern
+    // Mealplan abrufen
     const res = await request(app)
       .post('/api/mealplan')
       .set('Cookie', cookie)
@@ -53,7 +67,7 @@ describe('🍽️ /api/mealplan', () => {
     expect(Object.keys(res.body.meals).length).toBe(3);
   });
 
-  it('❌ verweigert Zugriff ohne Token', async () => {
+  it('verweigert Zugriff ohne Token', async () => {
     const res = await request(app)
       .post('/api/mealplan')
       .send({

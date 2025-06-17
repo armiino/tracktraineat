@@ -1,114 +1,100 @@
+import dotenv from 'dotenv';
+dotenv.config(); // .env muss man laden bevor Prisma verwendet wird
+
 import request from 'supertest';
 import express from 'express';
-import authRouter from '../route/authRoute';
-import { User } from '../model/User';
+import authRoute from '../route/authRoute';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 
 const app = express();
 app.use(express.json());
-app.use('/api/auth', authRouter);
+app.use('/api/auth', authRoute);
 
-describe('Integrationstest für register und login..', () => {
-  it('user registrieren', async () => {
-    const response = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email: 'test@test.de',
-        password: 'test123',
-      });
+describe('Auth Integrationstest-Register & Login', () => {
+  const email = 'testuser@example.com';
+  const password = 'securePassword123';
 
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('id');
-    expect(response.body.email).toBe('test@test.de');
+  beforeAll(async () => {
+    // Testdaten aus der DB löschen
+    await prisma.user.deleteMany({});
   });
 
-  it('keine doppelte Registrierung', async () => {
-    //Erste Registrierung
-    await request(app)
-      .post('/api/auth/register')
-      .send({
-        email: 'test2@test.de',
-        password: 'test123',
-      });
-
-    //Gleiche Registrierung nochmal
-    const response = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email: 'test2@test.de',
-        password: 'test123',
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
-  it('erfolgreicher login', async () => {
-    const email = 'login@test.de';
-    const password = 'test123';
-  
-    // Vorher registrieren
-    await request(app)
+  it('registriert einen neuen User', async () => {
+    const res = await request(app)
       .post('/api/auth/register')
       .send({ email, password });
-  
-    // Dann einloggen
-    const response = await request(app)
-      .post('/api/auth/login')
-      .send({ email, password });
-  
-    expect(response.status).toBe(200);
-   // expect(response.body).toBe('{"message": "AuthControllerInfo: login succesfull"}');
+
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body.email).toBe(email);
   });
 
-  it('falsches passwort für login', async () => {
-    const email = 'test@test.de';
-    const password = 'test123';
-  
-    await request(app)
+  it('verhindert doppelte Registrierung', async () => {
+    const res = await request(app)
       .post('/api/auth/register')
       .send({ email, password });
-  
-    const response = await request(app)
-      .post('/api/auth/login')
-      .send({ email, password: 'test123123' });
-  
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('error');
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('error');
   });
 
-  it('email existiert nicht', async () => {
-    const response = await request(app)
+  it('erlaubt erfolgreichen Login', async () => {
+    const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'testtesttest@test.de', password: '123456' });
-  
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('error');
+      .send({ email, password });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('token');
   });
 
-  it('body leer bei login request', async () => {
-    const response = await request(app)
+  it('lehnt falsches Passwort ab', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email, password: 'wrongPassword' });
+
+    expect(res.status).toBe(401);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('lehnt Login mit nicht existierender Email ab', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'noone@nowhere.de', password });
+
+    expect(res.status).toBe(401);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  it('lehnt Login mit leerem Body ab', async () => {
+    const res = await request(app)
       .post('/api/auth/login')
       .send({});
-  
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('error');
   });
-  
-  it('email ungültig', async () => {
-    const response = await request(app)
+
+  it('lehnt Registrierung mit ungültiger Email ab', async () => {
+    const res = await request(app)
       .post('/api/auth/register')
-      .send({ email: 'invalid', password: 'short' });
-  
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
+      .send({ email: 'invalid', password: '12345678' });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('error');
   });
-  it('Passwort zu krz', async () => {
-    const response = await request(app)
-      .post('/api/auth/login')
-      .send({ email: 'test@test.de', password: '123' });
-  
-    expect(response.status).toBe(400);
+
+  it('lehnt Registrierung mit zu kurzem Passwort ab', async () => {
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'kurz@test.de', password: '123' });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('error');
   });
-    
 });
