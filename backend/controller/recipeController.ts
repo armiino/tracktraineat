@@ -42,6 +42,7 @@ export class RecipeController {
       const plan = await this.recipeService.getMealPlan(userId, dto);
       res.status(200).json(plan);
     } catch (error: any) {
+      console.error('Debug: Fehler im getMealPlan:', error);
       res.status(400).json({ error: error.message });
     }
   }

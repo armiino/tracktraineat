@@ -67,5 +67,36 @@ export class UserProfile {
         : this.weight * 1.5;
     }
 
+    //zusatz um bmr und tdee sepeart zu liefern -> grundumsatz und gesamt
+    getCalorieAnalysis(burned: number = 0): { bmr: number; tdee: number } {
+      let bmr: number;
+    
+      if (this.gender === 'male') {
+        bmr = 10 * this.weight + 6.25 * this.height - 5 * this.age + 5;
+      } else {
+        bmr = 10 * this.weight + 6.25 * this.height - 5 * this.age - 161;
+      }
+    
+      let activityFactor = 1.2;
+      if (this.activity === 'medium') activityFactor = 1.65;
+      else if (this.activity === 'high') activityFactor = 1.9;
+      else if (this.activity === 'superhigh') activityFactor = 2.2;
+    
+      let tdee = bmr * activityFactor;
+      tdee += burned;
+    
+      if (this.goal === 'loseWeight') {
+        tdee *= 0.85;
+      } else if (this.goal === 'gainMuscle') {
+        tdee *= 1.1;
+      }
+    
+      return {
+        bmr: Math.round(bmr),
+        tdee: Math.round(tdee),
+      };
+    }
+    
+
   }
   

@@ -16,6 +16,10 @@ export class CalculateProfileController {
     }
 
     const totalCalories = profile.calculateCaloriesProfile();
-    res.status(200).json({ totalCalories });
+    //res.status(200).json({ totalCalories });
+
+    const { bmr, tdee } = profile.getCalorieAnalysis();
+    res.status(200).json({ bmr, tdee, totalCalories });
+
   }
 }

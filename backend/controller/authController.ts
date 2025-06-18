@@ -70,7 +70,7 @@ export class AuthController {
         sameSite: 'lax',
       });
 
-      res.status(200).json({ token });
+      res.status(200).json({ message: 'AuthController: login succesfull' });
     } catch (error: any) {
       res.status(401).json({ error: error.message });
     }
