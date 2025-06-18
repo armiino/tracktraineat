@@ -1,28 +1,28 @@
 import dotenv from 'dotenv';
-dotenv.config(); // Muss GANZ oben stehen, damit Prisma auf DATABASE_URL zugreifen kann
+dotenv.config();
 
 import request from 'supertest';
-import app from '../index';
+import { app } from '../app';
 import { PrismaClient } from '@prisma/client';
+import nock from 'nock';
+import { mockSpoonacularSuccess } from './mocks/spoonacularMock';
 
 const prisma = new PrismaClient();
 
 describe('/api/mealplan', () => {
-  let cookie: string;
   const email = 'mealuser@test.de';
   const password = 'test123';
+  let cookie: string;
 
   beforeAll(async () => {
-    // Datenbank vorbereiten,zuerst alles löschen
-    await prisma.userProfile.deleteMany({});
-    await prisma.user.deleteMany({});
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (user) {
+      await prisma.userProfile.deleteMany({ where: { userId: user.id } });
+      await prisma.user.delete({ where: { id: user.id } });
+    }
 
-    // Registrierung
-    await request(app)
-      .post('/auth/register')
-      .send({ email, password });
+    await request(app).post('/auth/register').send({ email, password });
 
-    // Login und Cookie speichern
     const res = await request(app)
       .post('/auth/login')
       .send({ email, password });
@@ -30,14 +30,31 @@ describe('/api/mealplan', () => {
     cookie = res.headers['set-cookie'][0];
   });
 
+  afterEach(() => {
+    const pending = nock.pendingMocks();
+    if (pending.length > 0) {
+      const relevant = pending.filter(mock => mock.includes('spoonacular'));
+      if (relevant.length > 0) {
+        //log nötig um das korrekt mitzuverfolgen aufgrund von unerklärten fehlern
+        console.warn('nicht aufgerufene Nock-Mocks:', relevant);
+      }
+    }
+    nock.cleanAll();
+  });
+
   afterAll(async () => {
-    // Verbindung schließen, damit Jest korrekt beendet (fehler verhindern)
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (user) {
+      await prisma.userProfile.deleteMany({ where: { userId: user.id } });
+      await prisma.user.delete({ where: { id: user.id } });
+    }
     await prisma.$disconnect();
   });
 
   it('liefert einen Mealplan für ein gültiges Profil', async () => {
-    // Profil anlegen
-    await request(app)
+    mockSpoonacularSuccess();
+
+    const profileRes = await request(app)
       .post('/api/profile')
       .set('Cookie', cookie)
       .send({
@@ -47,10 +64,11 @@ describe('/api/mealplan', () => {
         gender: 'male',
         activity: 'medium',
         goal: 'gainMuscle',
-        dietType: 'omnivore'
+        dietType: 'omnivore',
       });
 
-    // Mealplan abrufen
+    expect(profileRes.status).toBe(201);
+
     const res = await request(app)
       .post('/api/mealplan')
       .set('Cookie', cookie)
@@ -58,7 +76,7 @@ describe('/api/mealplan', () => {
         mealsPerDay: 3,
         mealDistribution: [0.3, 0.3, 0.4],
         burned: 300,
-        dietType: 'omnivore'
+        dietType: 'omnivore',
       });
 
     expect(res.status).toBe(200);
@@ -74,7 +92,7 @@ describe('/api/mealplan', () => {
         mealsPerDay: 3,
         mealDistribution: [0.3, 0.3, 0.4],
         burned: 300,
-        dietType: 'omnivore'
+        dietType: 'omnivore',
       });
 
     expect(res.status).toBe(401);
