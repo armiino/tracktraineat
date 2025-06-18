@@ -49,4 +49,9 @@ export class PostgresUserProfileAdapter implements UserProfileRepository {
       }
     });
   }
+
+  async deleteByUserId(userId: string): Promise<void> {
+    await prisma.userProfile.deleteMany({ where: { userId } });
+  }
+
 }

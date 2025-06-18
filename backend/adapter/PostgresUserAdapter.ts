@@ -18,5 +18,12 @@ export class PostgresUserAdapter implements UserRepository {
       const role = data.role === 'admin' ? 'admin' : 'user'; //notfalls einfach immer user
       return new User(data.id, data.email, data.passwordHash, data.role as 'user' | 'admin');
     }
+    
+    async deleteByEmail(email: string): Promise<void> {
+      await prisma.user.deleteMany({
+        where: { email },
+      });
+    }
+    
   }
   
