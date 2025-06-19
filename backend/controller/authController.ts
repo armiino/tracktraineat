@@ -68,11 +68,30 @@ export class AuthController {
         httpOnly: true,
         secure: false, 
         sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 2, //damit cookie ne bestimmte lebenszeit hat 
       });
 
       res.status(200).json({ message: 'AuthController: login succesfull' });
     } catch (error: any) {
       res.status(401).json({ error: error.message });
     }
+  }
+  async logout(req: Request, res: Response): Promise<void> {
+    try {
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: false, 
+        sameSite: 'lax',
+      });
+      res.status(200).json({ message: 'Logout erfolgreich' });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  //test fürs frontend,.. ob user zulässig ja nein
+  async validate(req: Request, res: Response): Promise<void> {
+    const user = (req as any).user;
+    res.status(200).json({ authenticated: true, user });
   }
 }
