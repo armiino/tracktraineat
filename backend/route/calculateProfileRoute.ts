@@ -11,5 +11,6 @@ const service = userProfileService(adapter);
 const controller = new CalculateProfileController(service);
 
 router.get('/calculate/from-profile', requireAuth, (req, res) => controller.calculateFromProfile(req, res));
+router.post('/calculateProfile', requireAuth, (req, res) => controller.calculateFromProfile(req, res));
 
 export default router;
