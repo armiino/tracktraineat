@@ -40,7 +40,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
         });
       } else {
         setProfile(null);
-        handleApiError(err, "Profil konnte nicht geladen werden."); 
+        handleApiError(err, "Profil konnte nicht geladen werden.");
       }
     } finally {
       setIsLoading(false);

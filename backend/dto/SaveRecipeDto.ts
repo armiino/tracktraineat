@@ -1,5 +1,4 @@
-// src/dto/SaveRecipeRequestDto.ts
-import { IsInt, Min } from 'class-validator';
+import { IsInt, Min } from "class-validator";
 
 export class SaveRecipeRequestDto {
   @IsInt()

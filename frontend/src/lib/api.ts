@@ -29,7 +29,7 @@ api.interceptors.response.use(
 
     const status = error.response.status;
 
-    //401 / 403 soll Logout-Handler triggern -> rauswurf
+    //401 und 403 soll Logout-Handler triggern -> rauswurf
     if ((status === 401 || status === 403) && logoutHandler) {
       console.log("Interceptor triggert logout mit status: ", status);
       const reason: LogoutReason = status === 403 ? "expired" : "unauthorized";
