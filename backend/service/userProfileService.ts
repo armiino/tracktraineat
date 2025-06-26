@@ -1,4 +1,4 @@
-import { UserProfileRepository } from '../port/UserProfileRepository';
+import { UserProfileRepository } from '../adapter/port/UserProfileRepository';
 import { UserProfileDto } from '../dto/UserProfileDto';
 import { UserProfile } from '../model/UserProfile';
 
