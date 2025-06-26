@@ -6,14 +6,18 @@ import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import calculateRoute from './route/calculateRoute';
 import authRoute from './route/authRoute';
-import testMiddlewareRoute from './route/testMiddlewareRoute'; // TODO: wieder entfernen - dient nur zu testzwecken der Middleware
 //import userProfileRoute from './route/userProfileRoute';
 import calculateProfileRoute from './route/calculateProfileRoute';
 import { createRecipeRoute } from './route/recipeRoute';
 import { createUserProfileRoute } from './route/userProfileRoute';
-
+import savedRecipeRoute from './route/savedRecipeRoute';
 const app = express();
 const PORT = 8000;
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -26,10 +30,10 @@ app.use(cors({
 app.use('/api', calculateRoute); //offener endpunkt und kalulkuliert den Gesamtumsatz
 //app.use('/api', userProfileRoute); //profil anlegen oder updaten
 app.use('/auth', authRoute); //register und login TODO: evtl auch auf factory umziehen
-app.use('/test', testMiddlewareRoute); // TODO: wieder entfernen
 app.use('/api', calculateProfileRoute);
 app.use('/api', createRecipeRoute()); 
 app.use('/api', createUserProfileRoute());
+app.use('/api', savedRecipeRoute);
 
 //kurzer test obs läuft
 app.get('/', (req: Request, res: Response) => {
