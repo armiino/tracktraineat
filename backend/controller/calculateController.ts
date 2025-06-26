@@ -1,28 +1,27 @@
-import { Request, Response } from 'express';
-import { calculateCalories, CalorieInput } from '../service/calculateService';
+import { Request, Response } from "express";
+import { validate } from "class-validator";
+import { CalorieCalculationDto } from "../dto/CalorieCalculationDto";
+import { calculateCalories } from "../service/calculateService";
 
-export const handleCalculate = (req: Request, res: Response): void => {
-  const { weight, height, age, gender, activity, goal, burned } = req.body;
+export const handleCalculate = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const dto = new CalorieCalculationDto();
+  Object.assign(dto, req.body);
 
-  // billo validierung einfach kurzer check - sind alle eingaben vorhanden? 
-  // TODO im frontend dann richtige Validierung
-  if (!weight || !height || !age || !gender || !activity || !goal) {
-     res.status(400).json({ error: 'Missing required parameters' });
-     return;
+  const errors = await validate(dto);
+  if (errors.length > 0) {
+    res.status(400).json({
+      code: "validation_failed",
+      details: errors.map((e) => ({
+        field: e.property,
+        constraints: e.constraints,
+      })),
+    });
+    return;
   }
 
-
-  const input: CalorieInput = {
-    weight: Number(weight),
-    height: Number(height),
-    age: Number(age),
-    gender,
-    activity,
-    goal,
-    burned: Number(burned) || 0,
-  };
-
-  const totalCalories = calculateCalories(input);
-
+  const totalCalories = calculateCalories(dto);
   res.status(200).json({ totalCalories });
 };
