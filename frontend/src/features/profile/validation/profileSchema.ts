@@ -3,7 +3,8 @@ import { z } from "zod";
 export const profileSchema = z.object({
   age: z
     .number({ invalid_type_error: "Alter muss eine Zahl sein." })
-    .min(10, "Alter muss mindestens 10 Jahre sein."),
+    .min(10, "Alter muss mindestens 10 Jahre sein.")
+    .max(120, "Alter darf höchstens 120 Jahre sein."),
   height: z
     .number({ invalid_type_error: "Größe muss eine Zahl sein." })
     .min(50, "Größe muss mindestens 50 cm sein."),
