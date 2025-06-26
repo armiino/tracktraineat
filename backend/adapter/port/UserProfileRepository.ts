@@ -1,4 +1,4 @@
-import { UserProfile } from '../model/UserProfile';
+import { UserProfile } from '../../model/UserProfile';
 
 export interface UserProfileRepository {
   save(profile: UserProfile): Promise<void>;
