@@ -1,18 +1,18 @@
-import { UserRepository } from '../port/UserRepository';
+import { UserRepository } from './port/UserRepository';
 import { User } from '../model/User';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
 export class PostgresUserAdapter implements UserRepository {
+  constructor(private readonly prisma: PrismaClient) {}
+
     async save(user: User): Promise<void> {
-      await prisma.user.create({
+      await this.prisma.user.create({
         data: user.toPersistence(),
       });
     }
   
     async findByEmail(email: string): Promise<User | null> {
-      const data = await prisma.user.findUnique({ where: { email } });
+      const data = await this.prisma.user.findUnique({ where: { email } });
       if (!data) return null;
   
       const role = data.role === 'admin' ? 'admin' : 'user'; //notfalls einfach immer user
@@ -20,7 +20,7 @@ export class PostgresUserAdapter implements UserRepository {
     }
     
     async deleteByEmail(email: string): Promise<void> {
-      await prisma.user.deleteMany({
+      await this.prisma.user.deleteMany({
         where: { email },
       });
     }
