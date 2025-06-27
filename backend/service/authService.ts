@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { RegisterUserDTO } from "../dto/RegisterUserDto";
 import { UserRepository } from "../adapter/port/UserRepository";
 
-const JWT_SECRET = process.env.JWT_SECRET || "jwtsecrettest"; //fallback fürs testing später da jest kein .env ntzt
+const JWT_SECRET = process.env.JWT_SECRET ?? "jwtsecrettest"; //fallback fürs testing später da jest kein .env ntzt
 
 export const authService = (repo: UserRepository) => ({
   async register(dto: RegisterUserDTO): Promise<User> {
@@ -19,7 +19,7 @@ export const authService = (repo: UserRepository) => ({
     try {
       await repo.save(user);
     } catch (err: any) {
-      const code = err.code || "register_failed";
+      const code = err.code ?? "register_failed";
       const wrapped = new Error("Registrierung fehlgeschlagen");
       (wrapped as any).code = code;
       throw wrapped;
@@ -34,7 +34,7 @@ export const authService = (repo: UserRepository) => ({
     try {
       user = await repo.findByEmail(email);
     } catch (err: any) {
-      const code = err.code || "login_failed";
+      const code = err.code ?? "login_failed";
       const wrapped = new Error("Fehler beim Login");
       (wrapped as any).code = code;
       throw wrapped;

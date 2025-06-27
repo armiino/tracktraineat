@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { SaveRecipeRequestDto } from "../dto/SaveRecipeDto";
 import { validate } from "class-validator";
+import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
 export class SavedRecipeController {
   constructor(
@@ -9,8 +10,8 @@ export class SavedRecipeController {
     >
   ) {}
 
-  private getUserId(req: Request): string | null {
-    return (req as any).user?.id ?? null;
+  private getUserId(req: RequestWithUser): string | null {
+    return req.user?.id ?? null;
   }
 
   async saveRecipe(req: Request, res: Response): Promise<void> {

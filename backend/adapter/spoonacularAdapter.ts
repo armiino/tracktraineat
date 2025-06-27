@@ -17,7 +17,7 @@ export class SpoonacularAdapter implements RecipePort {
     if (dietType === "vegan" || dietType === "vegetarian") {
       return dietType;
     }
-    return undefined; 
+    return undefined;
   }
 
   async searchRecipesByCaloriesAndProtein(
@@ -119,7 +119,7 @@ export class SpoonacularAdapter implements RecipePort {
         wrapped.message = `${status}: Rezept nicht gefunden`;
         wrapped.code = "spoonacular_not_found";
       } else {
-        wrapped.message = `${status || "unknown"}: Fehler von Spoonacular`;
+        wrapped.message = `${status ?? "unknown"}: Fehler von Spoonacular`;
         wrapped.code = "spoonacular_unknown_error";
       }
 
