@@ -48,19 +48,24 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env.test
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> backend/.env.test
 
-      - name: Generate Prisma Client
+      - name: Load .env.test to ENV
         run: |
           cd backend
+          export $(cat .env.test | xargs)
+
+          # Generate Prisma Client
           npx prisma generate
 
-      - name: Apply Prisma Migrations
-        run: |
-          cd backend
+          # Apply Migrations
           npx prisma migrate deploy --schema=prisma/schema.prisma
+
+          # Optional: Log DATABASE_URL for Debugging (safe if no password exposed)
+          echo "DB: $DATABASE_URL"
 
       - name: Run Tests with Coverage
         run: |
           cd backend
+          export $(cat .env.test | xargs)
           npx jest --coverage
 
       - name: SonarCloud Scan
