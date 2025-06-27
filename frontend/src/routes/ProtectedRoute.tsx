@@ -1,10 +1,10 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { ReactNode } from "react";
 import { ProfileProvider } from "@/features/profile/context/ProfileContext";
 
 interface ProtectedRouteProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {

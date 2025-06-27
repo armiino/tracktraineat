@@ -9,12 +9,10 @@ import { PrismaClient } from "@prisma/client";
 
 export const createRecipeRoute = () => {
   const prisma = new PrismaClient();
-  //const adapter = new PostgresUserProfileAdapter(prisma);
 
   const userRepo = new PostgresUserProfileAdapter(prisma);
   const userSvc = userProfileService(userRepo);
 
-  const apiKey = process.env.SPOONACULAR_API_KEY;
   const recipeProvider = new SpoonacularAdapter();
   const recipeSvc = recipeService(recipeProvider, userSvc);
   const controller = new RecipeController(recipeSvc);

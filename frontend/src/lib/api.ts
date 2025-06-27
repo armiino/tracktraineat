@@ -23,9 +23,10 @@ api.interceptors.response.use(
     //netzwerkfehler wie backend down liefert kein objekt und der response ist leer.. auch kein statuscode
     if (!error.response) {
       console.warn("Server nicht erreichbar.");
-      // toast.error("Keine Verbindung zum Server.");
-      return Promise.reject(error);
+      const networkError = new Error("Server nicht erreichbar.");
+      return Promise.reject(networkError);
     }
+    
 
     const status = error.response.status;
 
@@ -41,7 +42,9 @@ api.interceptors.response.use(
       toast.error("Interner Serverfehler. Bitte versuche es später erneut.");
     }
 
-    return Promise.reject(error);
+    return Promise.reject(
+      error instanceof Error ? error : new Error("Unbekannter Fehler")
+    );
   }
 );
 

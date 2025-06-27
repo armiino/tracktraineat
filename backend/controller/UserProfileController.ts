@@ -2,14 +2,19 @@ import { Request, Response } from "express";
 import { validate } from "class-validator";
 import { UserProfileDto } from "../dto/UserProfileDto";
 import { userProfileService } from "../service/userProfileService";
+import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
 export class UserProfileController {
   constructor(
     private readonly service: ReturnType<typeof userProfileService>
   ) {}
 
-  async getProfile(req: Request, res: Response): Promise<void> {
-    const userId = (req as any).user?.id;
+  async getProfile(req: RequestWithUser, res: Response): Promise<void> {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ code: "get_profile_failed" });
+      return;
+    }
 
     try {
       const profile = await this.service.getProfile(userId);
@@ -19,11 +24,12 @@ export class UserProfileController {
       }
       res.status(200).json(profile);
     } catch (error: any) {
+      console.error("Fehler beim Abrufen des Profils:", error);
       res.status(500).json({ code: "get_profile_failed" });
     }
   }
 
-  async createProfile(req: Request, res: Response): Promise<void> {
+  async createProfile(req: RequestWithUser, res: Response): Promise<void> {
     const dto = new UserProfileDto();
     Object.assign(dto, req.body);
 
@@ -39,17 +45,22 @@ export class UserProfileController {
       return;
     }
 
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ code: "get_profile_failed" });
+      return;
+    }
 
     try {
       const profile = await this.service.createProfile(userId, dto);
       res.status(201).json(profile);
     } catch (error: any) {
+      console.error("Fehler beim Erstellen des Profils:", error);
       res.status(500).json({ code: "create_profile_failed" });
     }
   }
 
-  async updateProfile(req: Request, res: Response): Promise<void> {
+  async updateProfile(req: RequestWithUser, res: Response): Promise<void> {
     const dto = new UserProfileDto();
     Object.assign(dto, req.body);
 
@@ -65,7 +76,11 @@ export class UserProfileController {
       return;
     }
 
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ code: "get_profile_failed" });
+      return;
+    }
 
     try {
       const updated = await this.service.updateProfile(userId, dto);

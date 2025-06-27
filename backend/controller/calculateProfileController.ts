@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
 export class CalculateProfileController {
   constructor(
@@ -7,8 +8,13 @@ export class CalculateProfileController {
     >
   ) {}
 
-  async calculateFromProfile(req: Request, res: Response): Promise<void> {
-    const userId = (req as any).user?.id;
+  async calculateFromProfile(req: RequestWithUser, res: Response): Promise<void> {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({ code: "get_profile_failed" });
+      return;
+    }
 
     try {
       const profile = await this.userProfileService.getProfile(userId);

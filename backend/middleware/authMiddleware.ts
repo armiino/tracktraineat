@@ -1,9 +1,14 @@
-import { RequestHandler } from "express";
+import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
-const JWT_SECRET = process.env.JWT_SECRET || "jwtsecrettest";
+const JWT_SECRET = process.env.JWT_SECRET ?? "jwtsecrettest";
 
-export const requireAuth: RequestHandler = (req, res, next) => {
+export const requireAuth = (
+  req: RequestWithUser,
+  res: Response,
+  next: NextFunction
+) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -12,12 +17,14 @@ export const requireAuth: RequestHandler = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    (req as any).user = decoded; //req objekt noch ein userfeld hinzufügn (aktuell nur mit any möglich TODO: lösung suchen um any zu umgehen)
-
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+      id: string;
+      email?: string;
+    };
+    req.user = decoded;
     return next();
   } catch (err) {
+    console.log("Token ist invalide", err);
     res.status(403).json({ code: "invalid_token" });
-    return;
   }
 };

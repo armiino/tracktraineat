@@ -11,6 +11,7 @@ export interface Recipe {
   calories: number;
   protein: number;
   source?: "original" | "fallbackWithProtein" | "fallbackNoProtein";
+  splitRatio?: number;
 }
 
 export interface RecipeDetail extends Recipe {

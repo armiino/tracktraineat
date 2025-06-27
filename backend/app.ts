@@ -6,12 +6,12 @@ import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import calculateRoute from './route/calculateRoute';
 import authRoute from './route/authRoute';
-//import userProfileRoute from './route/userProfileRoute';
 import calculateProfileRoute from './route/calculateProfileRoute';
 import { createRecipeRoute } from './route/recipeRoute';
 import { createUserProfileRoute } from './route/userProfileRoute';
 import savedRecipeRoute from './route/savedRecipeRoute';
 const app = express();
+app.disable("x-powered-by");
 const PORT = 8000;
 
 app.use(cors({
@@ -28,8 +28,7 @@ app.use(cors({
 }));
 
 app.use('/api', calculateRoute); //offener endpunkt und kalulkuliert den Gesamtumsatz
-//app.use('/api', userProfileRoute); //profil anlegen oder updaten
-app.use('/auth', authRoute); //register und login TODO: evtl auch auf factory umziehen
+app.use('/auth', authRoute); //register und login 
 app.use('/api', calculateProfileRoute);
 app.use('/api', createRecipeRoute()); 
 app.use('/api', createUserProfileRoute());

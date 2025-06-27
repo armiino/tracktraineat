@@ -25,7 +25,6 @@ export default function SessionValidator() {
         }
       } catch (err) {
         handleApiError(err, "Verbindung zum Server fehlgeschlagen");
-        // logout();
       }
     };
 

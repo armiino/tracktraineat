@@ -37,7 +37,8 @@ export const recipeService = (
     }
 
     const totalCalories = profile.calculateCaloriesProfile(dto.burned);
-    const { mealsPerDay, mealDistribution, dietType } = dto;
+    const { mealDistribution } = dto;
+    const dietType = dto.dietType ?? "omnivore";
     const proteinTarget =
       profile.weight * (profile.goal === "gainMuscle" ? 2 : 1.5);
 
@@ -45,10 +46,9 @@ export const recipeService = (
     const warnings: string[] = [];
     const usedRecipeIds = new Set<number>();
 
-    // indizes mit gleichem anteil gruppieren
     const groups: Record<number, number[]> = {};
     mealDistribution.forEach((share, idx) => {
-      const key = Math.round(share * 1000); //0.3 zu300
+      const key = Math.round(share * 1000);
       if (!groups[key]) groups[key] = [];
       groups[key].push(idx);
     });
@@ -58,7 +58,6 @@ export const recipeService = (
       const caloriesForMeal = Math.round(totalCalories * share);
       const proteinForMeal = Math.round(proteinTarget * share);
 
-      //mehrere Rezepte auf einmal holen
       const wantedRecipes = indices.length * 3;
       let recipes = await recipeProvider.searchRecipesByCaloriesAndProtein(
         caloriesForMeal,
@@ -67,7 +66,6 @@ export const recipeService = (
         wantedRecipes
       );
 
-      //keine duplikate anzeigen deswegen filtern
       recipes = recipes.filter((r) => !usedRecipeIds.has(r.id));
       recipes.forEach((r) => usedRecipeIds.add(r.id));
 
@@ -86,8 +84,7 @@ export const recipeService = (
             source: "standard",
           }));
         } else {
-          //fallbacks
-          const parts = caloriesForMeal > 1500 ? [0.4, 0.25, 0.35] : [0.6, 0.4];
+          const parts = caloriesForMeal > 1500 ? [0.4, 0.35, 0.25] : [0.6, 0.4];
           const fallbackLabels = ["a", "b", "c"];
 
           for (let j = 0; j < parts.length; j++) {
@@ -104,7 +101,11 @@ export const recipeService = (
 
             splitRecipes = splitRecipes
               .filter((r) => !usedRecipeIds.has(r.id))
-              .map((r) => ({ ...r, source: "fallbackWithProtein" }));
+              .map((r) => ({
+                ...r,
+                source: "fallbackWithProtein",
+                splitRatio: parts[j],
+              }));
             splitRecipes.forEach((r) => usedRecipeIds.add(r.id));
 
             if (splitRecipes.length === 0) {
@@ -117,7 +118,11 @@ export const recipeService = (
                 );
               splitRecipes = splitRecipes
                 .filter((r) => !usedRecipeIds.has(r.id))
-                .map((r) => ({ ...r, source: "fallbackNoProtein" }));
+                .map((r) => ({
+                  ...r,
+                  source: "fallbackNoProtein",
+                  splitRatio: parts[j],
+                }));
               splitRecipes.forEach((r) => usedRecipeIds.add(r.id));
 
               if (splitRecipes.length > 0) {

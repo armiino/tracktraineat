@@ -1,0 +1,61 @@
+name: Build and Analyze
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  backend-ci:
+    name: Backend Tests + Coverage + SonarCloud
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgresUser
+          POSTGRES_PASSWORD: defaultPassword
+          POSTGRES_DB: tracktraineat_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Create .env.test File from Secrets
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env.test
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> backend/.env.test
+
+      - name: Run Tests with Coverage
+        run: |
+          cd backend
+          npx jest --coverage
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
