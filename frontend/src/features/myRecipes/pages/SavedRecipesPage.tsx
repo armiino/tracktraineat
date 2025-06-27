@@ -69,54 +69,51 @@ export default function SavedRecipes() {
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recipes.map((recipe) => (
-                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center hover:shadow-lg transition h-full">
-                {/* Oberer klickbarer Bereich */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedRecipe(recipe);
-                    setIsModalOpen(true);
-                  }}
-                  className="w-full outline-none focus:ring-2 focus:ring-blue-400 flex flex-col items-center flex-1"
+                <div
+                  key={recipe.spoonId ?? recipe.id}
+                  className="bg-white rounded-lg shadow p-4 flex flex-col items-center hover:shadow-lg transition h-full"
                 >
-                  {/* Bild & Titel oben */}
-                  <img
-                    src={recipe.image}
-                    alt={recipe.title}
-                    className="w-full h-40 object-cover rounded mb-3"
-                  />
-                  <h4 className="text-lg font-semibold text-center mb-1">
-                    {recipe.title}
-                  </h4>
-              
-                  {/* Spacer drückt Metadaten nach unten */}
-                  <div className="flex-grow" />
-              
-                  {/* Metadaten ganz unten */}
-                  <div className="mt-3 text-sm text-gray-700 text-center">
-                    <p className="text-xs text-gray-500 mb-1">
-                      {new Date(recipe.createdAt).toLocaleString()}
-                    </p>
-                    <p>{recipe.calories} kcal</p>
-                    <p>{recipe.protein} g</p>
-                  </div>
-                </button>
-              
-                {/* Delete-Button */}
-                <div className="pt-4">
+                  {" "}
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteRecipe(recipe.spoonId);
+                    onClick={() => {
+                      setSelectedRecipe(recipe);
+                      setIsModalOpen(true);
                     }}
-                    className="mx-auto block text-red-600 hover:text-red-800"
+                    className="w-full outline-none focus:ring-2 focus:ring-blue-400 flex flex-col items-center flex-1"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <img
+                      src={recipe.image}
+                      alt={recipe.title}
+                      className="w-full h-40 object-cover rounded mb-3"
+                    />
+                    <h4 className="text-lg font-semibold text-center mb-1">
+                      {recipe.title}
+                    </h4>
+
+                    <div className="flex-grow" />
+
+                    <div className="mt-3 text-sm text-gray-700 text-center">
+                      <p className="text-xs text-gray-500 mb-1">
+                        {new Date(recipe.createdAt).toLocaleString()}
+                      </p>
+                      <p>{recipe.calories} kcal</p>
+                      <p>{recipe.protein} g</p>
+                    </div>
                   </button>
+                  <div className="pt-4">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteRecipe(recipe.spoonId);
+                      }}
+                      className="mx-auto block text-red-600 hover:text-red-800"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              
               ))}
             </div>
           );

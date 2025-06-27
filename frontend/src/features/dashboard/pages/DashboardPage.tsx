@@ -37,23 +37,26 @@ export default function Dashboard() {
     return { mealNumber, mealPart };
   };
 
-  const getInfoText = (sourceLabel: string | null, mealPart: string, meals: Recipe[]) => {
+  const getInfoText = (
+    sourceLabel: string | null,
+    mealPart: string,
+    meals: Recipe[]
+  ) => {
     const percentage =
       meals[0]?.splitRatio !== undefined
         ? `${Math.round(meals[0].splitRatio * 100)}%`
         : "";
-  
+
     if (sourceLabel === "fallbackWithProtein") {
       return `Hinweis: Diese Teilmahlzeit enthält ca. ${percentage} des Kalorien-/Protein-Ziels, da die Gesamtmenge zu groß war.`;
     }
-  
+
     if (sourceLabel === "fallbackNoProtein") {
       return `Hinweis: Diese Teilmahlzeit enthält ca. ${percentage} des Kalorien-Ziels, jedoch ohne Protein-Ziel, da keine passenden Rezepte gefunden wurden.`;
     }
-  
+
     return "";
   };
-  
 
   const {
     value: calories,
@@ -162,7 +165,7 @@ export default function Dashboard() {
               <p className="text-sm text-neutral-600 mt-1">
                 Verbleibend von{" "}
                 {Math.round(
-                  Number(localStorage.getItem("dailyCalories") ?? "0")
+                  Number(localStorage.getItem("dailyCalories") ?? "1")
                 )}{" "}
                 kcal
               </p>
@@ -200,7 +203,7 @@ export default function Dashboard() {
                   animate={{
                     width: `${Math.min(
                       (protein /
-                        (Number(localStorage.getItem("dailyProtein")) || 1)) *
+                        (Number(localStorage.getItem("dailyProtein")) ?? 1)) *
                         100,
                       100
                     )}%`,
@@ -212,7 +215,7 @@ export default function Dashboard() {
               <p className="text-sm text-neutral-600 mt-1">
                 Verbleibend von{" "}
                 {Math.round(
-                  Number(localStorage.getItem("dailyProtein") || "0")
+                  Number(localStorage.getItem("dailyProtein") ?? "1")
                 )}{" "}
                 g
               </p>
@@ -283,8 +286,7 @@ export default function Dashboard() {
                 const meals = recipes[mealKey];
                 const { mealNumber, mealPart } = getMealNumberAndPart(mealKey);
                 const sourceLabel = meals[0]?.source ?? null;
-                const infoText = getInfoText(sourceLabel, mealPart, meals); // 👈 meals mitgeben
-
+                const infoText = getInfoText(sourceLabel, mealPart, meals); 
 
                 return (
                   <div key={mealKey}>
@@ -311,49 +313,47 @@ export default function Dashboard() {
                     )}
 
                     {meals.length > 0 ? (
-                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                     {meals.map((recipe) => (
-                       <div
-                         key={recipe.id}
-                         className="bg-white/90 backdrop-blur-sm border border-neutral-200 rounded-xl shadow-sm p-4 flex flex-col items-center hover:shadow-md transition h-full"
-                       >
-                         {/* Bild & Titel oben */}
-                         <img
-                           src={recipe.image}
-                           alt={recipe.title}
-                           className="w-full h-40 object-cover rounded mb-3"
-                         />
-                         <h4 className="text-lg font-semibold text-center mb-1 text-neutral-900">
-                           {recipe.title}
-                         </h4>
-                   
-                         {/* Spacer, damit Kalorien & Protein nach unten gedrückt werden */}
-                         <div className="flex-grow" />
-                   
-                         {/* Kalorien & Protein unten */}
-                         <div className="text-sm text-neutral-600 mb-3 text-center">
-                           <p>
-                             <strong>Kalorien:</strong> {Math.round(recipe.calories)} kcal
-                           </p>
-                           <p>
-                             <strong>Protein:</strong> {Math.round(recipe.protein)} g
-                           </p>
-                         </div>
-                   
-                         {/* Rezept-Button ganz unten */}
-                         <div className="w-full flex justify-center">
-                           <button
-                             onClick={() => {
-                               setSelectedSpoonId(recipe.id);
-                               setIsModalOpen(true);
-                             }}
-                             className="flex items-center gap-1 px-3 py-1.5 text-sm bg-neutral-100 text-neutral-800 rounded-full hover:bg-neutral-200 transition shadow-sm"
-                           >
-                             <BookOpenText className="w-4 h-4" />
-                             Rezept
-                           </button>
-                         </div>
-                       </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {meals.map((recipe) => (
+                          <div
+                            key={recipe.id}
+                            className="bg-white/90 backdrop-blur-sm border border-neutral-200 rounded-xl shadow-sm p-4 flex flex-col items-center hover:shadow-md transition h-full"
+                          >
+                            <img
+                              src={recipe.image}
+                              alt={recipe.title}
+                              className="w-full h-40 object-cover rounded mb-3"
+                            />
+                            <h4 className="text-lg font-semibold text-center mb-1 text-neutral-900">
+                              {recipe.title}
+                            </h4>
+
+                            <div className="flex-grow" />
+
+                            <div className="text-sm text-neutral-600 mb-3 text-center">
+                              <p>
+                                <strong>Kalorien:</strong>{" "}
+                                {Math.round(recipe.calories)} kcal
+                              </p>
+                              <p>
+                                <strong>Protein:</strong>{" "}
+                                {Math.round(recipe.protein)} g
+                              </p>
+                            </div>
+
+                            <div className="w-full flex justify-center">
+                              <button
+                                onClick={() => {
+                                  setSelectedSpoonId(recipe.id);
+                                  setIsModalOpen(true);
+                                }}
+                                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-neutral-100 text-neutral-800 rounded-full hover:bg-neutral-200 transition shadow-sm"
+                              >
+                                <BookOpenText className="w-4 h-4" />
+                                Rezept
+                              </button>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     ) : (

@@ -2,6 +2,7 @@ import parse from "html-react-parser";
 import { X } from "lucide-react";
 import { RecipeDetail } from "@/globalTypes/recipe";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { useEffect } from "react";
 
 interface SavedRecipe extends RecipeDetail {
   spoonId: number;
@@ -20,7 +21,11 @@ export default function SavedRecipeModal({
   recipeData,
   onDelete,
 }: SavedRecipeModalProps) {
-  void onDelete;
+  useEffect(() => {
+    // soll unused prop verhindern..
+    () => onDelete;
+  }, [onDelete]);
+  
   return (
     <Dialog
       open={isOpen}
