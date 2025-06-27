@@ -28,6 +28,32 @@ export default function Dashboard() {
   const [warnings, setWarnings] = useState<string[]>([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const { profile, isLoading } = useProfile();
+  const mealRegex = /^meal(\d+)([a-z]?)$/i;
+
+  const getMealNumberAndPart = (mealKey: string) => {
+    const match = mealRegex.exec(mealKey);
+    const mealNumber = match ? match[1] : mealKey;
+    const mealPart = match?.[2]?.toUpperCase() ?? "";
+    return { mealNumber, mealPart };
+  };
+
+  const getInfoText = (sourceLabel: string | null, mealPart: string, meals: Recipe[]) => {
+    const percentage =
+      meals[0]?.splitRatio !== undefined
+        ? `${Math.round(meals[0].splitRatio * 100)}%`
+        : "";
+  
+    if (sourceLabel === "fallbackWithProtein") {
+      return `Hinweis: Diese Teilmahlzeit enthält ca. ${percentage} des Kalorien-/Protein-Ziels, da die Gesamtmenge zu groß war.`;
+    }
+  
+    if (sourceLabel === "fallbackNoProtein") {
+      return `Hinweis: Diese Teilmahlzeit enthält ca. ${percentage} des Kalorien-Ziels, jedoch ohne Protein-Ziel, da keine passenden Rezepte gefunden wurden.`;
+    }
+  
+    return "";
+  };
+  
 
   const {
     value: calories,
@@ -51,10 +77,10 @@ export default function Dashboard() {
         mealsPerDay: data.mealsPerDay,
         mealDistribution: distribution,
         burned: 0,
-        dietType: profile?.dietType || "none",
+        dietType: profile?.dietType ?? "none",
       });
-      setRecipes(response.meals || {});
-      setWarnings(response.warnings || []);
+      setRecipes(response.meals ?? {});
+      setWarnings(response.warnings ?? []);
     } catch (err) {
       handleApiError(err, "Mealplan konnte nicht generiert werden.");
       setRecipes({});
@@ -243,30 +269,22 @@ export default function Dashboard() {
           <div className="mt-10 space-y-8">
             {Object.keys(recipes)
               .sort((a, b) => {
-                const [ma, pa = ""] =
-                  a.match(/^meal(\d+)([a-z]?)$/i)?.slice(1) || [];
-                const [mb, pb = ""] =
-                  b.match(/^meal(\d+)([a-z]?)$/i)?.slice(1) || [];
+                const matchA = mealRegex.exec(a);
+                const matchB = mealRegex.exec(b);
+
+                const ma = matchA?.[1] ?? "";
+                const pa = matchA?.[2] ?? "";
+                const mb = matchB?.[1] ?? "";
+                const pb = matchB?.[2] ?? "";
+
                 return parseInt(ma) - parseInt(mb) || pa.localeCompare(pb);
               })
               .map((mealKey) => {
                 const meals = recipes[mealKey];
-                const match = mealKey.match(/^meal(\d+)([a-z]?)$/i);
-                const mealNumber = match ? match[1] : mealKey;
-                const mealPart =
-                  match && match[2] ? match[2].toUpperCase() : "";
-                const sourceLabel = meals.length > 0 ? meals[0]?.source : null;
+                const { mealNumber, mealPart } = getMealNumberAndPart(mealKey);
+                const sourceLabel = meals[0]?.source ?? null;
+                const infoText = getInfoText(sourceLabel, mealPart, meals); // 👈 meals mitgeben
 
-                let infoText = "";
-                if (sourceLabel === "fallbackWithProtein") {
-                  infoText = `Hinweis: Diese Teilmahlzeit enthält ca. ${
-                    mealPart === "A" ? "60%" : mealPart === "B" ? "40%" : "30%"
-                  } des Kalorien-/Protein-Ziels, da die Gesamtmenge zu groß war.`;
-                } else if (sourceLabel === "fallbackNoProtein") {
-                  infoText = `Hinweis: Diese Teilmahlzeit enthält ca. ${
-                    mealPart === "A" ? "60%" : mealPart === "B" ? "40%" : "30%"
-                  } des Kalorien-Ziels, jedoch ohne Protein-Ziel, da keine passenden Rezepte gefunden wurden.`;
-                }
 
                 return (
                   <div key={mealKey}>
@@ -348,8 +366,8 @@ export default function Dashboard() {
                   ⚠️ Hinweise zur Zusammenstellung
                 </h4>
                 <ul className="list-disc list-inside space-y-1">
-                  {warnings.map((warning, idx) => (
-                    <li key={idx}>{warning}</li>
+                  {warnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
                   ))}
                 </ul>
               </div>

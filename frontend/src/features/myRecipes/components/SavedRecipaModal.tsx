@@ -8,10 +8,10 @@ interface SavedRecipe extends RecipeDetail {
 }
 
 interface SavedRecipeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  recipeData: SavedRecipe;
-  onDelete: (spoonId: number) => void;
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly recipeData: SavedRecipe;
+  readonly onDelete: (spoonId: number) => void;
 }
 
 export default function SavedRecipeModal({
@@ -50,8 +50,8 @@ export default function SavedRecipeModal({
 
           <h4 className="font-semibold mt-4 mb-1">Zutaten:</h4>
           <ul className="list-disc pl-5 text-sm text-gray-800">
-            {recipeData.ingredients.map((ing, index) => (
-              <li key={index}>
+            {recipeData.ingredients.map((ing) => (
+              <li key={ing.name}>
                 {ing.amount} {ing.unit} {ing.name}
               </li>
             ))}

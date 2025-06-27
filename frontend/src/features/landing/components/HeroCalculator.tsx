@@ -35,7 +35,7 @@ export default function HeroCalculator() {
       setResult(res.data.totalCalories);
     } catch (err) {
       if (err instanceof z.ZodError) {
-        const firstError = err.errors[0]?.message || "Ungültige Eingaben";
+        const firstError = err.errors[0]?.message ?? "Ungültige Eingaben";
         toast.error(firstError);
         return;
       }
@@ -168,9 +168,9 @@ export default function HeroCalculator() {
                     image: "/snack.jpg",
                     desc: "Joghurt, Honig, Nüsse",
                   },
-                ].map((item, idx) => (
+                ].map((item) => (
                   <div
-                    key={idx}
+                    key={item.title}
                     className="bg-white p-4 rounded-xl shadow-sm flex items-start gap-4 hover:shadow-md transition"
                   >
                     <img

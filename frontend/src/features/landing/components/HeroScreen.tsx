@@ -2,7 +2,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-export default function HeroScreen({ onStart }: { onStart: () => void }) {
+interface HeroScreenProps {
+  readonly onStart: () => void;
+}
+
+export default function HeroScreen({ onStart }: HeroScreenProps) {
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-100 to-zinc-200 px-4 text-center">
       <div className="w-full max-w-2xl flex flex-col items-center">

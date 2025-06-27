@@ -1,6 +1,5 @@
 // src/pages/SavedRecipes.tsx
 import { useEffect, useState } from "react";
-import api from "../../../lib/api";
 import { useNavigate } from "react-router-dom";
 import SavedRecipeModal from "../components/SavedRecipaModal";
 import { BookOpenCheck, Trash2 } from "lucide-react";
@@ -50,58 +49,77 @@ export default function SavedRecipes() {
           <BookOpenCheck className="w-7 h-7" />
           Meine Rezepte
         </h1>
-
-        {loading ? (
-          <p className="text-center text-gray-600">
-            Lade gespeicherte Rezepte...
-          </p>
-        ) : recipes.length === 0 ? (
-          <p className="text-center text-gray-600">
-            Keine gespeicherten Rezepte gefunden.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recipes.map((recipe) => (
-              <div
-                key={recipe.id}
-                className="bg-white rounded-lg shadow p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
-                onClick={() => {
-                  setSelectedRecipe(recipe);
-                  setIsModalOpen(true);
-                }}
-              >
-                <img
-                  src={recipe.image}
-                  alt={recipe.title}
-                  className="w-full h-40 object-cover rounded mb-3"
-                />
-                <h4 className="text-lg font-semibold text-center mb-1">
-                  {recipe.title}
-                </h4>
-                <p className="text-sm text-gray-700 mb-1">
-                  {recipe.calories} kcal
-                </p>
-                <p className="text-sm text-gray-700 mb-1">{recipe.protein} g</p>
-                <p className="text-xs text-gray-500">
-                  {new Date(recipe.createdAt).toLocaleString()}
-                </p>
-
-                <div className="mt-auto pt-4">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // verhindert Modal-Öffnung(öffnen sich normal on cklick)
-                      deleteRecipe(recipe.spoonId);
-                    }}
-                    className="mx-auto block text-red-600 hover:text-red-800"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+  
+        {(() => {
+          if (loading) {
+            return (
+              <p className="text-center text-gray-600">
+                Lade gespeicherte Rezepte...
+              </p>
+            );
+          }
+  
+          if (recipes.length === 0) {
+            return (
+              <p className="text-center text-gray-600">
+                Keine gespeicherten Rezepte gefunden.
+              </p>
+            );
+          }
+  
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recipes.map((recipe) => (
+                <div
+                  key={recipe.createdAt}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    setSelectedRecipe(recipe);
+                    setIsModalOpen(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      setSelectedRecipe(recipe);
+                      setIsModalOpen(true);
+                    }
+                  }}
+                  className="bg-white rounded-lg shadow p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  <img
+                    src={recipe.image}
+                    alt={recipe.title}
+                    className="w-full h-40 object-cover rounded mb-3"
+                  />
+                  <h4 className="text-lg font-semibold text-center mb-1">
+                    {recipe.title}
+                  </h4>
+                  <p className="text-sm text-gray-700 mb-1">
+                    {recipe.calories} kcal
+                  </p>
+                  <p className="text-sm text-gray-700 mb-1">{recipe.protein} g</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(recipe.createdAt).toLocaleString()}
+                  </p>
+          
+                  <div className="mt-auto pt-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteRecipe(recipe.spoonId);
+                      }}
+                      className="mx-auto block text-red-600 hover:text-red-800"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-
+              ))}
+            </div>
+          );
+          
+        })()}
+  
         <div className="mt-10 text-center">
           <button
             onClick={() => navigate("/dashboard")}
@@ -110,6 +128,7 @@ export default function SavedRecipes() {
             Zurück zum Dashboard
           </button>
         </div>
+  
         {selectedRecipe && (
           <SavedRecipeModal
             isOpen={isModalOpen}
@@ -124,4 +143,5 @@ export default function SavedRecipes() {
       </div>
     </div>
   );
+  
 }

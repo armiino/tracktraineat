@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   ReactNode,
+  useMemo,
 } from "react";
 import { validate } from "../services/authService";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +21,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -39,6 +40,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
   };
+  const contextValue = useMemo(
+    () => ({ isAuthenticated, isLoading, login, logout }),
+    [isAuthenticated, isLoading, login, logout]
+  );
+
   useEffect(() => {
     registerSessionHandler((reason = "unauthorized") => {
       const protectedPaths = ["/dashboard", "/profile", "/saved"];
@@ -61,7 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log(3);
         /*  bei refresh wird wieder /validate abgefragt und hier auf false gesetzt.
             dadurch wird man automatisch auf login geleitet weil das system denkt man ist nicht eingeloggt 
-            TODO: Zustandsabfrage ändern?
         */
         setIsAuthenticated(false);
       } finally {
@@ -73,9 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

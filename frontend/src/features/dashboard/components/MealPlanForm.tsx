@@ -9,7 +9,9 @@ interface MealPlanFormProps {
   }) => void;
 }
 
-export default function MealPlanForm({ onGenerate }: MealPlanFormProps) {
+export default function MealPlanForm({
+  onGenerate,
+}: Readonly<MealPlanFormProps>) {
   const [mealsPerDay, setMealsPerDay] = useState(3);
   const [distribution, setDistribution] = useState([40, 30, 30]);
   const [error, setError] = useState("");
@@ -53,10 +55,14 @@ export default function MealPlanForm({ onGenerate }: MealPlanFormProps) {
         Mealplan erstellen
       </h3>
 
-      <label className="block mb-2 font-medium text-gray-700">
+      <label
+        htmlFor="mealCount"
+        className="block mb-2 font-medium text-gray-700"
+      >
         Anzahl Mahlzeiten pro Tag (2–4)
       </label>
       <select
+        id="mealCount"
         value={mealsPerDay}
         onChange={(e) => handleMealCountChange(Number(e.target.value))}
         className="w-full p-3 border border-gray-300 rounded-xl mb-5 focus:outline-none focus:ring-2 focus:ring-gray-400"
@@ -66,23 +72,33 @@ export default function MealPlanForm({ onGenerate }: MealPlanFormProps) {
         <option value={4}>4 Mahlzeiten</option>
       </select>
 
-      <label className="block mb-2 font-medium text-gray-700">
-        Verteilung der Mahlzeiten (%)
-      </label>
-      <div className={`grid grid-cols-${mealsPerDay} gap-3 mb-2`}>
-        {Array.from({ length: mealsPerDay }).map((_, index) => (
-          <input
-            key={index}
-            type="number"
-            min={0}
-            max={70}
-            step={mealsPerDay === 4 ? 1 : 10}
-            value={distribution[index] || 0}
-            onChange={(e) => handleChange(index, Number(e.target.value))}
-            className="p-3 border border-gray-300 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-gray-400"
-          />
-        ))}
+      <label className="block mb-2 font-medium text-gray-700" htmlFor={`meal-0`}>
+  Verteilung der Mahlzeiten (%)
+</label>
+<div className={`grid grid-cols-${mealsPerDay} gap-3 mb-2`}>
+  {Array.from({ length: mealsPerDay }).map((_, index) => {
+    const inputId = `meal-distribution-${index}`;
+    return (
+      <div key={inputId} className="w-full">
+        <label htmlFor={inputId} className="sr-only">
+          Mahlzeit {index + 1}
+        </label>
+        <input
+          id={inputId}
+          type="number"
+          min={0}
+          max={70}
+          step={mealsPerDay === 4 ? 1 : 10}
+          value={distribution[index] ?? 0}
+          onChange={(e) => handleChange(index, Number(e.target.value))}
+          className="w-full p-3 border border-gray-300 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-gray-400"
+        />
       </div>
+    );
+  })}
+</div>
+
+
 
       <p className="text-center text-sm text-gray-500 mb-4">
         Aktuelle Summe:{" "}
