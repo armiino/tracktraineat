@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { validate } from "class-validator";
 import { UserProfileDto } from "../dto/UserProfileDto";
 import { userProfileService } from "../service/userProfileService";

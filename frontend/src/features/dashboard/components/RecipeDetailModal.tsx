@@ -7,10 +7,10 @@ import { RecipeDetail } from "@/globalTypes/recipe";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 interface RecipeDetailModalProps {
-  spoonId: number;
-  isOpen: boolean;
-  onClose: () => void;
-  onSave?: (usedCalories: number, usedProtein?: number) => void;
+  readonly spoonId: number;
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly onSave?: (usedCalories: number, usedProtein?: number) => void;
 }
 
 export default function RecipeDetailModal({
@@ -69,13 +69,13 @@ export default function RecipeDetailModal({
                 className="w-full h-48 object-cover rounded mb-4"
               />
               <div className="mb-2 text-gray-700 text-sm">
-                {parse(recipe.instructions || "")}
+                {parse(recipe.instructions ?? "")}
               </div>
 
               <h4 className="font-semibold mt-4 mb-1">Zutaten:</h4>
               <ul className="list-disc pl-5 text-sm text-gray-800">
-                {recipe.ingredients.map((ing, index) => (
-                  <li key={index}>
+                {recipe.ingredients.map((ing) => (
+                 <li key={ing.name}>
                     {ing.amount} {ing.unit} {ing.name}
                   </li>
                 ))}

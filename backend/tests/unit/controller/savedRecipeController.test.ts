@@ -30,6 +30,7 @@ describe("SavedRecipeController", () => {
   beforeEach(() => {
     controller = new SavedRecipeController(mockService as any);
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   describe("saveRecipe", () => {

@@ -62,7 +62,7 @@ export default function Profile() {
       gender: form.gender,
       activity: form.activity,
       goal: form.goal,
-      dietType: form.dietType || "omnivore",
+      dietType: form.dietType ?? "omnivore",
     };
 
     try {
@@ -77,7 +77,7 @@ export default function Profile() {
       setProfile(validated);
 
       await resetCalories();
-      await resetProtein();      
+      await resetProtein();
 
       toast.success("Aktualisierung erfolgreich");
 

@@ -52,6 +52,7 @@ export class SavedRecipeController {
       const recipes = await this.service.getAll(userId);
       res.json(recipes);
     } catch (error: any) {
+      console.error("Fehler beim Laden der Rezepte", error);
       res.status(500).json({ code: "load_saved_recipes_failed" });
     }
   }
@@ -69,6 +70,7 @@ export class SavedRecipeController {
       await this.service.delete(userId, spoonId);
       res.status(204).send();
     } catch (error: any) {
+      console.error("Fehler beim löschen eines gespeicherten Rezepts!",error);
       res.status(500).json({ code: "saved_recipe_delete_failed" });
     }
   }

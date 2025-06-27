@@ -18,7 +18,9 @@ export default function SavedRecipeModal({
   isOpen,
   onClose,
   recipeData,
+  onDelete,
 }: SavedRecipeModalProps) {
+  void onDelete;
   return (
     <Dialog
       open={isOpen}

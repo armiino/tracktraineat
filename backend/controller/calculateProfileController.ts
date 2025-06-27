@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
 export class CalculateProfileController {
@@ -8,7 +8,10 @@ export class CalculateProfileController {
     >
   ) {}
 
-  async calculateFromProfile(req: RequestWithUser, res: Response): Promise<void> {
+  async calculateFromProfile(
+    req: RequestWithUser,
+    res: Response
+  ): Promise<void> {
     const userId = req.user?.id;
 
     if (!userId) {

@@ -40,7 +40,7 @@ export const authService = (repo: UserRepository) => ({
       throw wrapped;
     }
 
-    if (!user || !user.checkPassword(password)) {
+    if (!user?.checkPassword(password)) {
       const err: any = new Error("Invalid credentials");
       err.code = "invalid_credentials";
       throw err;
