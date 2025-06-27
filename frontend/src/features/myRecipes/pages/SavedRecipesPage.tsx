@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SavedRecipeModal from "../components/SavedRecipaModal";
 import { BookOpenCheck, Trash2 } from "lucide-react";
 import { SavedRecipe } from "@/globalTypes/recipe";
 import { handleApiError } from "@/lib/handleApiError";
 import { savedRecipeService } from "../services/savedRecipeService";
+import SavedRecipeModal from "../components/SavedRecipaModal";
 
 export default function SavedRecipes() {
   const [recipes, setRecipes] = useState<SavedRecipe[]>([]);
@@ -136,7 +136,6 @@ export default function SavedRecipes() {
               setSelectedRecipe(null);
             }}
             recipeData={selectedRecipe}
-            onDelete={deleteRecipe}
           />
         )}
       </div>

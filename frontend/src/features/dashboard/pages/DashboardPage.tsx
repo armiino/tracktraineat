@@ -153,7 +153,8 @@ export default function Dashboard() {
                   animate={{
                     width: `${Math.min(
                       (calories /
-                        (Number(localStorage.getItem("dailyCalories")) ?? 1)) *
+                        (Number(localStorage.getItem("dailyCalories")) ??
+                          "1")) *
                         100,
                       100
                     )}%`,
@@ -203,7 +204,7 @@ export default function Dashboard() {
                   animate={{
                     width: `${Math.min(
                       (protein /
-                        (Number(localStorage.getItem("dailyProtein")) ?? 1)) *
+                        (Number(localStorage.getItem("dailyProtein")) ?? "1")) *
                         100,
                       100
                     )}%`,
@@ -286,7 +287,7 @@ export default function Dashboard() {
                 const meals = recipes[mealKey];
                 const { mealNumber, mealPart } = getMealNumberAndPart(mealKey);
                 const sourceLabel = meals[0]?.source ?? null;
-                const infoText = getInfoText(sourceLabel, mealPart, meals); 
+                const infoText = getInfoText(sourceLabel, mealPart, meals);
 
                 return (
                   <div key={mealKey}>

@@ -2,30 +2,22 @@ import parse from "html-react-parser";
 import { X } from "lucide-react";
 import { RecipeDetail } from "@/globalTypes/recipe";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { useEffect } from "react";
 
 interface SavedRecipe extends RecipeDetail {
   spoonId: number;
 }
 
-interface SavedRecipeModalProps {
+export interface SavedRecipeModalProps {
   readonly isOpen: boolean;
   readonly onClose: () => void;
   readonly recipeData: SavedRecipe;
-  readonly onDelete: (spoonId: number) => void;
 }
 
 export default function SavedRecipeModal({
   isOpen,
   onClose,
   recipeData,
-  onDelete,
 }: SavedRecipeModalProps) {
-  useEffect(() => {
-    // soll unused prop verhindern..
-    () => onDelete;
-  }, [onDelete]);
-  
   return (
     <Dialog
       open={isOpen}
