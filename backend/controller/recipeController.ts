@@ -3,6 +3,7 @@ import { validate } from "class-validator";
 import { RecipeQueryDto } from "../dto/RecipeQueryDto";
 import { RecipeService } from "../service/recipeService";
 import { RecipeIdParamDto } from "../dto/RecipeIdParamDto";
+import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
 export class RecipeController {
   // constructor(private readonly recipeService: ReturnType<typeof import('../service/recipeService').recipeService>) {}
@@ -39,9 +40,12 @@ export class RecipeController {
     }
   }
 
-  async getRecipes(req: Request, res: Response): Promise<void> {
-    const userId = (req as any).user?.id;
-
+  async getRecipes(req: RequestWithUser, res: Response): Promise<void> {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ code: "profile_not_found" });
+      return;
+    }
     try {
       const recipes = await this.recipeService.getRecipesForUser(userId);
       res.status(200).json(recipes);
@@ -49,12 +53,14 @@ export class RecipeController {
       res.status(400).json({ error: error.message });
     }
   }
-
-  async getMealPlan(req: Request, res: Response): Promise<void> {
-    const userId = (req as any).user?.id;
-
+  
+  async getMealPlan(req: RequestWithUser, res: Response): Promise<void> {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ code: "profile_not_found" });
+      return;
+    }
     const dto = Object.assign(new RecipeQueryDto(), req.body);
-
     const errors = await validate(dto);
     if (errors.length > 0) {
       res.status(400).json({
@@ -81,4 +87,4 @@ export class RecipeController {
       }
     }
   }
-}
+}  

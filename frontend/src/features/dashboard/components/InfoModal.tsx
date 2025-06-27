@@ -7,7 +7,10 @@ interface InfoModalProps {
   onClose: () => void;
 }
 
-export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
+export default function InfoModal({
+  isOpen,
+  onClose,
+}: Readonly<InfoModalProps>) {
   return (
     <AnimatePresence>
       {isOpen && (

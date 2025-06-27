@@ -13,7 +13,7 @@ export function savedRecipeService(
         data = await recipeProvider.getRecipeDetails(spoonId);
       } catch (err: any) {
         const error = new Error("Rezept konnte nicht geladen werden");
-        (error as any).code = err.code || "recipe_not_found";
+        (error as any).code = err.code ?? "recipe_not_found";
         throw error;
       }
 
@@ -45,7 +45,7 @@ export function savedRecipeService(
         };
       } catch (err: any) {
         const wrapped = new Error("Speichern des Rezepts fehlgeschlagen");
-        (wrapped as any).code = err.code || "save_recipe_failed";
+        (wrapped as any).code = err.code ?? "save_recipe_failed";
         throw wrapped;
       }
     },
@@ -57,7 +57,7 @@ export function savedRecipeService(
         const wrapped = new Error(
           "Fehler beim Laden der gespeicherten Rezepte"
         );
-        (wrapped as any).code = err.code || "load_saved_recipes_failed";
+        (wrapped as any).code = err.code ?? "load_saved_recipes_failed";
         throw wrapped;
       }
     },
@@ -67,7 +67,7 @@ export function savedRecipeService(
         await repo.deleteSavedRecipe(userId, spoonId);
       } catch (err: any) {
         const wrapped = new Error("Fehler beim Löschen des Rezepts");
-        (wrapped as any).code = err.code || "saved_recipe_delete_failed";
+        (wrapped as any).code = err.code ?? "saved_recipe_delete_failed";
         throw wrapped;
       }
     },

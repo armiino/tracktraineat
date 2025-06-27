@@ -19,19 +19,6 @@ export default function Login() {
     if (toastShownRef.current) return;
     toastShownRef.current = true;
 
-    const errorState = location.state?.error;
-    const infoState = location.state?.info;
-
-    /*  zustandsabfrage mit toast -> eig. nicht nötig da errorhandling bereits alles abfängt und anzeigt
-
-   if (errorState === "expired") {
-      toast.error("Deine Sitzung ist abgelaufen.");
-    } else if (errorState === "unauthorized") {
-      toast.error("Bitte melde dich zuerst an.");
-    } 
-
-    */
-
     //falls ich zurücknavigier-> cleanup
     window.history.replaceState({}, document.title);
   }, [location]);

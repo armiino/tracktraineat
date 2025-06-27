@@ -5,11 +5,15 @@ import {
   useEffect,
   useState,
   ReactNode,
+  useMemo,
+  useCallback
 } from "react";
 import { fetchProfile as fetchProfileAPI } from "../services/profileService";
 import { useAuth } from "../../auth/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { handleApiError } from "@/lib/handleApiError";
+
+
 
 interface ProfileContextType {
   profile: UserProfile | null;
@@ -26,7 +30,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetchProfileAPI();
@@ -45,17 +49,21 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [logout, navigate]);
+  
 
   useEffect(() => {
     if (!isAuthenticated) return;
     refetch();
   }, [isAuthenticated]);
 
+  const value = useMemo(
+    () => ({ profile, isLoading, refetch, setProfile }),
+    [profile, isLoading, refetch, setProfile]
+  );  
+  
   return (
-    <ProfileContext.Provider
-      value={{ profile, isLoading, refetch, setProfile }}
-    >
+    <ProfileContext.Provider value={value}>
       {children}
     </ProfileContext.Provider>
   );

@@ -1,5 +1,7 @@
-import { SavedRecipeModel } from '../../model/SavedRecipe';
-import { SavedRecipeCreateInput } from '../../model/SavedRecipe';
+import {
+  SavedRecipeModel,
+  SavedRecipeCreateInput,
+} from "../../model/SavedRecipe";
 
 export interface SavedRecipeRepository {
   saveRecipe(data: SavedRecipeCreateInput): Promise<SavedRecipeModel>;

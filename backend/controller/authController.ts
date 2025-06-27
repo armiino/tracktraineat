@@ -3,6 +3,7 @@ import { validate } from "class-validator";
 import { RegisterUserDTO } from "../dto/RegisterUserDto";
 import { LoginUserDTO } from "../dto/LoginUserDto";
 import { authService as AuthServiceType } from "../service/authService";
+import { RequestWithUser } from "../globalTypes/RequestWithUser";
 
 export class AuthController {
   constructor(
@@ -36,6 +37,7 @@ export class AuthController {
       const user = await this.authService.register(dto);
       res.status(201).json(user.getPublicProfile());
     } catch (error: any) {
+      console.error("Fehler bei der Registrierung:", error);
       if (error.code === "email_taken") {
         res.status(409).json({ code: "email_taken" });
       } else {
@@ -78,6 +80,7 @@ export class AuthController {
 
       res.status(200).json({ message: "AuthController: login succesfull" });
     } catch (error: any) {
+      console.error("Fehler beim Login:", error);
       if (error.code === "invalid_credentials") {
         res.status(401).json({ code: "invalid_credentials" });
       } else {
@@ -94,17 +97,18 @@ export class AuthController {
       });
       res.status(200).json({ message: "Logout erfolgreich" });
     } catch (error: any) {
+      console.error("Fehler beim Logout:", error);
       res.status(500).json({ code: "logout_failed" });
     }
   }
 
   //test fürs frontend,.. ob user zulässig ja nein
-  async validate(req: Request, res: Response): Promise<void> {
-    if (!(req as any).user) {
+  async validate(req: RequestWithUser, res: Response): Promise<void> {
+    if (!req.user) {
       res.status(401).json({ authenticated: false });
       return;
     }
-    const user = (req as any).user;
+    const user = req.user;
     res.status(200).json({ authenticated: true, user });
   }
 }

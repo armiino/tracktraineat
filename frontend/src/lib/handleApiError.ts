@@ -68,9 +68,9 @@ export function handleApiError(
   //validation error (z.B. von class-validator oder so)
   if (res.status === 400 && Array.isArray(res.data?.details)) {
     const messages = res.data.details
-      .map((d: any) => Object.values(d.constraints || {}).join(", "))
+      .map((d: any) => Object.values(d.constraints ?? {}).join(", "))
       .join("\n");
-    toast.error(messages || "Ungültige Eingaben.");
+    toast.error(messages ?? "Ungültige Eingaben.");
     return;
   }
 
