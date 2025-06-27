@@ -153,7 +153,7 @@ export default function Dashboard() {
                   animate={{
                     width: `${Math.min(
                       (calories /
-                        (Number(localStorage.getItem("dailyCalories")) ??
+                        Number(localStorage.getItem("dailyCalories") ??
                           "1")) *
                         100,
                       100
@@ -204,7 +204,7 @@ export default function Dashboard() {
                   animate={{
                     width: `${Math.min(
                       (protein /
-                        (Number(localStorage.getItem("dailyProtein")) ?? "1")) *
+                        Number(localStorage.getItem("dailyProtein") ?? "1")) *
                         100,
                       100
                     )}%`,
