@@ -12,16 +12,18 @@ export class UserProfileController {
   async getProfile(req: RequestWithUser, res: Response): Promise<void> {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ code: "get_profile_failed" });
+      res.status(401).json({ code: "no_token" });
       return;
     }
 
     try {
       const profile = await this.service.getProfile(userId);
+
       if (!profile) {
         res.status(404).json({ code: "profile_not_found" });
         return;
       }
+
       res.status(200).json(profile);
     } catch (error: any) {
       console.error("Fehler beim Abrufen des Profils:", error);
@@ -47,16 +49,21 @@ export class UserProfileController {
 
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ code: "get_profile_failed" });
+      res.status(401).json({ code: "no_token" });
       return;
     }
 
     try {
       const profile = await this.service.createProfile(userId, dto);
       res.status(201).json(profile);
-    } catch (error: any) {
-      console.error("Fehler beim Erstellen des Profils:", error);
-      res.status(500).json({ code: "create_profile_failed" });
+    } catch (err: any) {
+      console.error("Fehler beim Erstellen des Profils:", err);
+
+      if (err.code === "profile_already_existing") {
+        res.status(409).json({ code: "profile_already_existing" });
+      } else {
+        res.status(500).json({ code: "create_profile_failed" });
+      }
     }
   }
 
@@ -78,7 +85,7 @@ export class UserProfileController {
 
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ code: "get_profile_failed" });
+      res.status(401).json({ code: "no_token" });
       return;
     }
 
@@ -86,9 +93,9 @@ export class UserProfileController {
       const updated = await this.service.updateProfile(userId, dto);
       res.status(200).json(updated);
     } catch (err: any) {
-      console.error("Update error:", err);
+      console.error("Fehler beim Aktualisieren des Profils:", err);
 
-      if (err.message === "Profil nicht gefunden") {
+      if (err.name === "NotFoundError") {
         res.status(404).json({ code: "profile_not_found" });
       } else {
         res.status(500).json({ code: "update_profile_failed" });

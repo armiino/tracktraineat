@@ -1,5 +1,5 @@
 import { UserProfileController } from "../../../controller/UserProfileController";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { validate } from "class-validator";
 
 jest.mock("class-validator", () => {
@@ -116,14 +116,15 @@ describe("UserProfileController", () => {
 
     it("gibt 404 zurück, wenn Profil nicht gefunden wird", async () => {
       const error = new Error("Profil nicht gefunden");
+      error.name = "NotFoundError"; // <<< wichtig!
       mockService.updateProfile.mockRejectedValueOnce(error);
       const req = { body: {}, user: { id: "user1" } } as any;
       const res = mockResponse();
-
+    
       await controller.updateProfile(req, res);
       expect(res.status).toHaveBeenCalledWith(404);
     });
-
+    
     it("gibt 500 zurück bei anderen Fehlern", async () => {
       const error = new Error("Sonstiger Fehler");
       mockService.updateProfile.mockRejectedValueOnce(error);
@@ -136,29 +137,28 @@ describe("UserProfileController", () => {
     it("gibt 401 zurück, wenn userId fehlt (getProfile)", async () => {
       const req = {} as any;
       const res = mockResponse();
-    
+
       await controller.getProfile(req, res);
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ code: "get_profile_failed" });
+      expect(res.json).toHaveBeenCalledWith({ code: "no_token" });
     });
-    
+
     it("gibt 401 zurück, wenn userId fehlt (createProfile)", async () => {
       const req = { body: {} } as any;
       const res = mockResponse();
-    
+
       await controller.createProfile(req, res);
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ code: "get_profile_failed" });
+      expect(res.json).toHaveBeenCalledWith({ code: "no_token" });
     });
-    
+
     it("gibt 401 zurück, wenn userId fehlt (updateProfile)", async () => {
       const req = { body: {} } as any;
       const res = mockResponse();
-    
+
       await controller.updateProfile(req, res);
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ code: "get_profile_failed" });
+      expect(res.json).toHaveBeenCalledWith({ code: "no_token" });
     });
-    
   });
 });
