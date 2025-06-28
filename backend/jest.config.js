@@ -1,6 +1,7 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   testEnvironment: "node",
+  maxWorkers: 1,
   transform: {
     "^.+\\.tsx?$": ["ts-jest", {}],
   },

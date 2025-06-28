@@ -2,7 +2,11 @@ import axios from "axios";
 import { RecipePort } from "./port/RecipePort";
 
 export class SpoonacularAdapter implements RecipePort {
-  private readonly apiKey: string | undefined = process.env.SPOONACULAR_API_KEY;
+  // private readonly apiKey: string | undefined = process.env.SPOONACULAR_API_KEY;
+  private get apiKey(): string | undefined {
+    return process.env.SPOONACULAR_API_KEY;
+  }
+
   private readonly baseUrl = "https://api.spoonacular.com";
 
   private ensureApiKey() {
@@ -65,14 +69,21 @@ export class SpoonacularAdapter implements RecipePort {
         )?.amount,
       }));
     } catch (err: any) {
-      if ([401, 402, 403].includes(err?.response?.status)) {
-        const wrapped = new Error(
-          `${err.response.status}: Generierung der Rezepte fehlgeschlagen - API-Key überprüfen!`
-        ) as any;
+      const status = err?.response?.status;
+      const wrapped = new Error("Fehler bei Spoonacular-Anfrage") as any;
+
+      if ([401, 402, 403].includes(status)) {
+        wrapped.message = `${status}: Generierung der Rezepte fehlgeschlagen - API-Key überprüfen!`;
         wrapped.code = "spoonacular_auth_error";
-        throw wrapped;
+      } else if (status === 404) {
+        wrapped.message = `${status}: Keine Rezepte gefunden`;
+        wrapped.code = "spoonacular_not_found";
+      } else {
+        wrapped.message = `${status ?? "unknown"}: Fehler von Spoonacular`;
+        wrapped.code = "spoonacular_unknown_error";
       }
-      throw err;
+
+      throw wrapped;
     }
   }
 

@@ -4,29 +4,27 @@ import { PostgresSavedRecipeAdapter } from "../adapter/PostgresSavedRecipeAdapte
 import { savedRecipeService } from "../service/savedRecipeService";
 import { SavedRecipeController } from "../controller/SavedRecipeController";
 import { SpoonacularAdapter } from "../adapter/spoonacularAdapter";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../prisma";
 
-const router = express.Router();
-const prisma = new PrismaClient();
-const adapter = new PostgresSavedRecipeAdapter(prisma);
+export function createSavedRecipeRoute(spoonacular: SpoonacularAdapter) {
+  const router = express.Router();
 
-const apiKey = process.env.SPOONACULAR_API_KEY!;
-const spoonacular = new SpoonacularAdapter();
-const service = savedRecipeService(adapter, spoonacular);
+  const adapter = new PostgresSavedRecipeAdapter(prisma);
+  const service = savedRecipeService(adapter, spoonacular);
+  const controller = new SavedRecipeController(service);
 
-const controller = new SavedRecipeController(service);
+  router.post("/recipes/save", requireAuth, (req, res) =>
+    controller.saveRecipe(req, res)
+  );
+  router.get("/recipes/saved", requireAuth, (req, res) =>
+    controller.getRecipes(req, res)
+  );
+  router.delete("/recipes/:spoonId", requireAuth, (req, res) =>
+    controller.deleteRecipe(req, res)
+  );
+  router.get("/saved", requireAuth, (req, res) =>
+    controller.getRecipes(req, res)
+  );
 
-router.post("/recipes/save", requireAuth, (req, res) =>
-  controller.saveRecipe(req, res)
-);
-router.get("/recipes/saved", requireAuth, (req, res) =>
-  controller.getRecipes(req, res)
-);
-router.delete("/recipes/:spoonId", requireAuth, (req, res) =>
-  controller.deleteRecipe(req, res)
-);
-router.get("/saved", requireAuth, (req, res) =>
-  controller.getRecipes(req, res)
-);
-
-export default router;
+  return router;
+}

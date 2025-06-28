@@ -1,6 +1,7 @@
 import { SavedRecipeRepository } from "../adapter/port/SavedRecipeRepository";
 import { RecipePort } from "../adapter/port/RecipePort";
 import { SavedRecipeModel, SavedRecipeCreateInput } from "../model/SavedRecipe";
+import { Prisma } from "@prisma/client";
 
 export function savedRecipeService(
   repo: SavedRecipeRepository,
@@ -12,8 +13,13 @@ export function savedRecipeService(
       try {
         data = await recipeProvider.getRecipeDetails(spoonId);
       } catch (err: any) {
+        const knownCodes = ["spoonacular_auth_error", "spoonacular_not_found"];
+        const code = knownCodes.includes(err.code)
+          ? "save_recipe_failed"
+          : "recipe_not_found";
+
         const error = new Error("Rezept konnte nicht geladen werden");
-        (error as any).code = err.code ?? "recipe_not_found";
+        (error as any).code = code;
         throw error;
       }
 
@@ -38,15 +44,27 @@ export function savedRecipeService(
 
       try {
         const saved = await repo.saveRecipe(recipe);
+        console.log("Repo.saveRecipe input:", recipe);
         return {
           ...saved,
           id: saved.id,
           createdAt: saved.createdAt,
         };
       } catch (err: any) {
-        const wrapped = new Error("Speichern des Rezepts fehlgeschlagen");
-        (wrapped as any).code = err.code ?? "save_recipe_failed";
-        throw wrapped;
+        console.error("SAVE ERROR", err);
+
+        if (
+          err instanceof Prisma.PrismaClientKnownRequestError &&
+          err.code === "P2002"
+        ) {
+          const error = new Error("Rezept bereits gespeichert");
+          (error as any).code = "recipe_already_saved";
+          throw error;
+        }
+
+        const error = new Error("Speichern des Rezepts fehlgeschlagen");
+        (error as any).code = "save_recipe_failed";
+        throw error;
       }
     },
 
@@ -54,11 +72,9 @@ export function savedRecipeService(
       try {
         return await repo.getSavedRecipes(userId);
       } catch (err: any) {
-        const wrapped = new Error(
-          "Fehler beim Laden der gespeicherten Rezepte"
-        );
-        (wrapped as any).code = err.code ?? "load_saved_recipes_failed";
-        throw wrapped;
+        const error = new Error("Fehler beim Laden der gespeicherten Rezepte");
+        (error as any).code = "load_saved_recipes_failed";
+        throw error;
       }
     },
 
@@ -66,9 +82,9 @@ export function savedRecipeService(
       try {
         await repo.deleteSavedRecipe(userId, spoonId);
       } catch (err: any) {
-        const wrapped = new Error("Fehler beim Löschen des Rezepts");
-        (wrapped as any).code = err.code ?? "saved_recipe_delete_failed";
-        throw wrapped;
+        const error = new Error("Fehler beim Löschen des Rezepts");
+        (error as any).code = "saved_recipe_delete_failed";
+        throw error;
       }
     },
   };

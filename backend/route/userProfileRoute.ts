@@ -3,10 +3,9 @@ import { PostgresUserProfileAdapter } from "../adapter/PostgresUserProfileAdapte
 import { userProfileService } from "../service/userProfileService";
 import { UserProfileController } from "../controller/UserProfileController";
 import { requireAuth } from "../middleware/authMiddleware";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../prisma";
 
 export const createUserProfileRoute = () => {
-  const prisma = new PrismaClient();
   const adapter = new PostgresUserProfileAdapter(prisma);
   const service = userProfileService(adapter);
   const controller = new UserProfileController(service);

@@ -14,7 +14,7 @@ export class SavedRecipeController {
     return req.user?.id ?? null;
   }
 
-  async saveRecipe(req: Request, res: Response): Promise<void> {
+  async saveRecipe(req: RequestWithUser, res: Response): Promise<void> {
     const userId = this.getUserId(req);
 
     const dto = new SaveRecipeRequestDto();
@@ -29,18 +29,16 @@ export class SavedRecipeController {
     try {
       const saved = await this.service.save(userId, dto.spoonId);
       res.status(201).json(saved);
-    } catch (error: any) {
-      if (error.code === "recipe_already_saved") {
-        res.status(409).json({ code: "recipe_already_saved" });
-      } else if (error.code === "recipe_not_found") {
-        res.status(404).json({ code: "recipe_not_found" });
-      } else {
-        res.status(500).json({ code: "save_recipe_failed" });
-      }
+    } catch (err: any) {
+      this.handleError(err, res, {
+        recipe_already_saved: 409,
+        recipe_not_found: 404,
+        save_recipe_failed: 500,
+      });
     }
   }
 
-  async getRecipes(req: Request, res: Response): Promise<void> {
+  async getRecipes(req: RequestWithUser, res: Response): Promise<void> {
     const userId = this.getUserId(req);
 
     if (!userId) {
@@ -50,14 +48,15 @@ export class SavedRecipeController {
 
     try {
       const recipes = await this.service.getAll(userId);
-      res.json(recipes);
-    } catch (error: any) {
-      console.error("Fehler beim Laden der Rezepte", error);
-      res.status(500).json({ code: "load_saved_recipes_failed" });
+      res.status(200).json(recipes);
+    } catch (err: any) {
+      this.handleError(err, res, {
+        load_saved_recipes_failed: 500,
+      });
     }
   }
 
-  async deleteRecipe(req: Request, res: Response): Promise<void> {
+  async deleteRecipe(req: RequestWithUser, res: Response): Promise<void> {
     const userId = this.getUserId(req);
     const spoonId = Number(req.params?.spoonId);
 
@@ -69,9 +68,25 @@ export class SavedRecipeController {
     try {
       await this.service.delete(userId, spoonId);
       res.status(204).send();
-    } catch (error: any) {
-      console.error("Fehler beim löschen eines gespeicherten Rezepts!",error);
-      res.status(500).json({ code: "saved_recipe_delete_failed" });
+    } catch (err: any) {
+      this.handleError(err, res, {
+        saved_recipe_delete_failed: 500,
+      });
     }
+  }
+
+  private handleError(
+    err: any,
+    res: Response,
+    codeMap: { [code: string]: number }
+  ): void {
+    const code = err.code || "unknown_error";
+    const status = codeMap[code] || 500;
+
+    if (status === 500) {
+      console.error("[Controller Error]", err);
+    }
+
+    res.status(status).json({ code });
   }
 }

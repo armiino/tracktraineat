@@ -3,10 +3,9 @@ import { AuthController } from '../controller/authController';
 import { PostgresUserAdapter } from '../adapter/PostgresUserAdapter';
 import { authService as createAuthService } from '../service/authService';
 import { requireAuth } from '../middleware/authMiddleware';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "../prisma";
 
 const router = express.Router();
-const prisma = new PrismaClient();
 const userRepo = new PostgresUserAdapter(prisma);
 const authSvc = createAuthService(userRepo);
 const controller = new AuthController(authSvc);

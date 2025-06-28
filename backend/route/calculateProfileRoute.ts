@@ -3,10 +3,9 @@ import { CalculateProfileController } from "../controller/calculateProfileContro
 import { PostgresUserProfileAdapter } from "../adapter/PostgresUserProfileAdapter";
 import { userProfileService } from "../service/userProfileService";
 import { requireAuth } from "../middleware/authMiddleware";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../prisma";
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
 const adapter = new PostgresUserProfileAdapter(prisma);
 const service = userProfileService(adapter);

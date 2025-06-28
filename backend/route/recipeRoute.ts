@@ -5,15 +5,19 @@ import { PostgresUserProfileAdapter } from "../adapter/PostgresUserProfileAdapte
 import { userProfileService } from "../service/userProfileService";
 import { recipeService } from "../service/recipeService";
 import { requireAuth } from "../middleware/authMiddleware";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../prisma";
+import { RecipePort } from "../adapter/port/RecipePort";
+import { UserProfileService } from "../service/recipeService";
 
-export const createRecipeRoute = () => {
-  const prisma = new PrismaClient();
+export const createRecipeRoute = (
+  customRecipeProvider?: RecipePort,
+  customUserProfileService?: UserProfileService
+) => {
+  const recipeProvider = customRecipeProvider ?? new SpoonacularAdapter();
 
   const userRepo = new PostgresUserProfileAdapter(prisma);
-  const userSvc = userProfileService(userRepo);
+  const userSvc = customUserProfileService ?? userProfileService(userRepo);
 
-  const recipeProvider = new SpoonacularAdapter();
   const recipeSvc = recipeService(recipeProvider, userSvc);
   const controller = new RecipeController(recipeSvc);
 
