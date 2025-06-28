@@ -47,6 +47,7 @@ jobs:
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env.test
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> backend/.env.test
+          echo "SPOONACULAR_API_KEY=${{ secrets.SPOONACULAR_API_KEY }}" >> backend/.env.test
 
       - name: Load .env.test to ENV
         run: |
