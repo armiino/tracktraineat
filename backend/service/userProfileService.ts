@@ -42,6 +42,7 @@ export const userProfileService = (repo: UserProfileRepository) => ({
     try {
       return await repo.findByUserId(userId);
     } catch (err: any) {
+      console.error("DbgInfo: Fehler beim Laden des Profils",err);
       const error = new Error("Fehler beim Laden des Profils");
       (error as any).code = "get_profile_failed";
       throw error;
