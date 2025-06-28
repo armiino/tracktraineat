@@ -36,7 +36,8 @@ const errorMap: Record<string, string> = {
   invalid_token: "Deine Sitzung ist abgelaufen oder ungültig.",
 
   invalid_input: "Eingabe ungültig.",
-  spoonacular_missing_key: "API KEY FEHLT!"
+  spoonacular_missing_key: "API KEY FEHLT!",
+  profile_already_existing: "profil existiert bre",
 };
 
 export function handleApiError(

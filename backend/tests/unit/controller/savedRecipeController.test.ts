@@ -1,6 +1,8 @@
 import { SavedRecipeController } from "../../../controller/SavedRecipeController";
 import { Request, Response } from "express";
 import { validate } from "class-validator";
+import { savedRecipeService } from "../../../service/savedRecipeService";
+import { Prisma } from "@prisma/client";
 
 jest.mock("class-validator", () => {
   const actual = jest.requireActual("class-validator");
@@ -121,19 +123,23 @@ describe("SavedRecipeController", () => {
       const req = {
         user: { id: "user1" },
       } as any as Request;
-
+    
       const res = mockResponse();
-
-      mockService.getAll.mockRejectedValueOnce(new Error("DB Fehler"));
-
+    
+      const error = new Error("DB Fehler") as any;
+      error.code = "load_saved_recipes_failed"; 
+      mockService.getAll.mockRejectedValueOnce(error);
+    
       await controller.getRecipes(req, res);
-
+    
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
         code: "load_saved_recipes_failed",
       });
     });
-  });
+    
+});
+
 
   describe("deleteRecipe", () => {
     it("gibt 400 zurück bei ungültiger Eingabe", async () => {
@@ -169,6 +175,41 @@ describe("SavedRecipeController", () => {
 
       await controller.deleteRecipe(req, res);
       expect(res.status).toHaveBeenCalledWith(500);
+    });
+  });
+});
+describe("savedRecipeService", () => {
+  it("wirft 'recipe_already_saved', wenn Prisma-Fehler P2002 auftritt", async () => {
+    const repo = {
+      saveRecipe: jest.fn(),
+      getSavedRecipes: jest.fn(),
+      deleteSavedRecipe: jest.fn(),
+    };
+
+    const recipeProvider = {
+      getRecipeDetails: jest.fn().mockResolvedValue({
+        title: "title",
+        image: "image.jpg",
+        calories: 100,
+        protein: 10,
+        fat: 5,
+        carbs: 20,
+        ingredients: [],
+        instructions: "Cook it",
+      }),
+    };
+
+    const prismaError = new Prisma.PrismaClientKnownRequestError(
+      "Unique constraint failed",
+      { code: "P2002", clientVersion: "4.x.x" }
+    );
+
+    repo.saveRecipe.mockRejectedValue(prismaError);
+
+    const service = savedRecipeService(repo as any, recipeProvider as any);
+
+    await expect(service.save("user1", 123)).rejects.toMatchObject({
+      code: "recipe_already_saved",
     });
   });
 });
