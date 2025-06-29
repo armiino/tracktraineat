@@ -106,6 +106,7 @@ describe("SpoonacularAdapter", () => {
   });
   // eslint-disable-next-line jest/expect-expect
   it(" throw wenn API key is missing", async () => {
+    expect.assertions(1);
     const adapter = new SpoonacularAdapter();
 
     const originalKey = process.env.SPOONACULAR_API_KEY;
@@ -119,6 +120,7 @@ describe("SpoonacularAdapter", () => {
   });
   // eslint-disable-next-line jest/expect-expect
   it("throw wrapped 404", async () => {
+    expect.assertions(1); // ✅ Neu hinzugefügt
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 404 },
     });
@@ -130,6 +132,7 @@ describe("SpoonacularAdapter", () => {
   });
   // eslint-disable-next-line jest/expect-expect
   it("throw wrapped 403", async () => {
+    expect.assertions(1);
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 403 },
     });
@@ -141,6 +144,7 @@ describe("SpoonacularAdapter", () => {
   });
   // eslint-disable-next-line jest/expect-expect
   it("throw unknown error", async () => {
+    expect.assertions(1);
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 500 },
     });
