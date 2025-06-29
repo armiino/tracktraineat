@@ -68,6 +68,16 @@ jobs:
           cd backend
           export $(cat .env.test | xargs)
           npx jest --coverage
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run Frontend Tests with Coverage
+        run: |
+         cd frontend
+          npx jest --coverage
+
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
