@@ -1,8 +1,8 @@
 import axios from "axios";
 import { PrismaClient } from "@prisma/client";
 import request from "supertest";
-import { SpoonacularAdapter } from "../../adapter/spoonacularAdapter";
-import { app } from "../../app";
+import { SpoonacularAdapter } from "../../../adapter/spoonacularAdapter";
+import { app } from "../../../app";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -104,23 +104,26 @@ describe("SpoonacularAdapter", () => {
       carbs: 60,
     });
   });
-  // eslint-disable-next-line jest/expect-expect
-  it(" throw wenn API key is missing", async () => {
-    expect.assertions(1);
-    const adapter = new SpoonacularAdapter();
 
-    const originalKey = process.env.SPOONACULAR_API_KEY;
-    delete process.env.SPOONACULAR_API_KEY;
+it("throw wenn API key is missing", async () => {
+  expect.assertions(1);
 
-    await expect(
-      adapter.searchRecipesByCaloriesAndProtein(500, 30, "omnivore")
-    ).rejects.toThrow("API-Key fehlt");
+  const adapter = new SpoonacularAdapter();
+  const originalKey = process.env.SPOONACULAR_API_KEY;
+  delete process.env.SPOONACULAR_API_KEY;
 
+  try {
+    await adapter.searchRecipesByCaloriesAndProtein(500, 30, "omnivore");
+  } catch (err) {
+    expect((err as Error).message).toBe("API-Key fehlt");
+  } finally {
     process.env.SPOONACULAR_API_KEY = originalKey;
-  });
-  // eslint-disable-next-line jest/expect-expect
+  }
+});
+
+
   it("throw wrapped 404", async () => {
-    expect.assertions(1); // ✅ Neu hinzugefügt
+    expect.assertions(1); 
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 404 },
     });
@@ -130,7 +133,7 @@ describe("SpoonacularAdapter", () => {
       code: "spoonacular_not_found",
     });
   });
-  // eslint-disable-next-line jest/expect-expect
+
   it("throw wrapped 403", async () => {
     expect.assertions(1);
     mockedAxios.get.mockRejectedValueOnce({
@@ -142,7 +145,7 @@ describe("SpoonacularAdapter", () => {
       code: "spoonacular_auth_error",
     });
   });
-  // eslint-disable-next-line jest/expect-expect
+
   it("throw unknown error", async () => {
     expect.assertions(1);
     mockedAxios.get.mockRejectedValueOnce({
