@@ -6,8 +6,8 @@ import {
   ReactNode,
   useMemo,
 } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { validate } from "../services/authService";
-import { useNavigate } from "react-router-dom";
 import { registerSessionHandler } from "@/lib/api";
 
 type LogoutReason = "manual" | "unauthorized" | "expired";
@@ -25,6 +25,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const login = () => setIsAuthenticated(true);
 
@@ -40,19 +41,20 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
       },
     });
   };
+
   const contextValue = useMemo(
     () => ({ isAuthenticated, isLoading, login, logout }),
-    [isAuthenticated, isLoading, login, logout]
+    [isAuthenticated, isLoading]
   );
 
   useEffect(() => {
     registerSessionHandler((reason = "unauthorized") => {
       const protectedPaths = ["/dashboard", "/profile", "/saved"];
-      const currentPath = window.location.pathname;
+      const currentPath = location.pathname;
       const isProtected = protectedPaths.some((p) => currentPath.startsWith(p));
       if (isProtected) {
         console.log(2);
-        logout(reason); // nur wenn ich auch auf einer gesicherten page bin -> plus redirect ans /login
+        logout(reason);
       } else {
         setIsAuthenticated(false);
       }
@@ -62,12 +64,8 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
       try {
         const res = await validate();
         setIsAuthenticated(res.data.authenticated);
-        //  console.log("info:" + res.data.authenticated)
       } catch {
         console.log(3);
-        /*  bei refresh wird wieder /validate abgefragt und hier auf false gesetzt.
-            dadurch wird man automatisch auf login geleitet weil das system denkt man ist nicht eingeloggt 
-        */
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -75,7 +73,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
     };
 
     check();
-  }, []);
+  }, [location.pathname]);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

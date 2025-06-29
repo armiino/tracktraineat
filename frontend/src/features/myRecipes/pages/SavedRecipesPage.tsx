@@ -70,7 +70,7 @@ export default function SavedRecipes() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recipes.map((recipe) => (
                 <div
-                  key={recipe.spoonId ?? recipe.id}
+                  key={`${recipe.spoonId}-${recipe.createdAt}`}
                   className="bg-white rounded-lg shadow p-4 flex flex-col items-center hover:shadow-lg transition h-full"
                 >
                   {" "}
@@ -103,6 +103,7 @@ export default function SavedRecipes() {
                   </button>
                   <div className="pt-4">
                     <button
+                      data-testid={`delete-button-${recipe.spoonId}`}
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
