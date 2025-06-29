@@ -87,6 +87,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/dashboard"
+                    aria-label="Dashboard"
                     onClick={() => setOpen(false)}
                     className="hover:text-blue-600 flex items-center"
                   >
@@ -98,6 +99,7 @@ export default function Navbar() {
                   <Link
                     to="/profile"
                     onClick={() => setOpen(false)}
+                    aria-label="Profile"
                     className="hover:text-blue-600 flex items-center"
                   >
                     <UserCircle size={24} />
@@ -108,6 +110,7 @@ export default function Navbar() {
                   <Link
                     to="/saved"
                     onClick={() => setOpen(false)}
+                    aria-label="Saved Recipes"
                     className="hover:text-blue-600 flex items-center"
                   >
                     <Bookmark size={24} />
@@ -117,6 +120,7 @@ export default function Navbar() {
                 <li>
                   <button
                     onClick={handleLogout}
+                    aria-label="Logout"
                     className="hover:text-red-600 flex items-center"
                   >
                     <LogOut size={24} />
