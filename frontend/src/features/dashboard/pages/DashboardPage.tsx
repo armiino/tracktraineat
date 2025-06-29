@@ -153,8 +153,7 @@ export default function Dashboard() {
                   animate={{
                     width: `${Math.min(
                       (calories /
-                        Number(localStorage.getItem("dailyCalories") ??
-                          "1")) *
+                        Number(localStorage.getItem("dailyCalories") ?? "1")) *
                         100,
                       100
                     )}%`,
@@ -318,6 +317,7 @@ export default function Dashboard() {
                         {meals.map((recipe) => (
                           <div
                             key={recipe.id}
+                            data-testid={`recipe-card-${recipe.id}`}
                             className="bg-white/90 backdrop-blur-sm border border-neutral-200 rounded-xl shadow-sm p-4 flex flex-col items-center hover:shadow-md transition h-full"
                           >
                             <img

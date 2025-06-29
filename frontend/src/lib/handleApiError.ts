@@ -60,11 +60,19 @@ export function handleApiError(
   }
 
   // Code vom Backend (zB res.data.code = "profile_not_found")
-  const backendCode = res.data?.code;
-  if (backendCode && typeof backendCode === "string" && errorMap[backendCode]) {
+const backendCode = res.data?.code;
+if (backendCode && typeof backendCode === "string") {
+  if (backendCode === "profile_not_found") {
+    // Kein Toast anzeigen, aber Funktion beenden
+    return;
+  }
+
+  if (errorMap[backendCode]) {
     toast.error(errorMap[backendCode]);
     return;
   }
+}
+
 
   //validation error (z.B. von class-validator oder so)
   if (res.status === 400 && Array.isArray(res.data?.details)) {
