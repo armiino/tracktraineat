@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { SaveRecipeRequestDto } from "../dto/SaveRecipeDto";
 import { validate } from "class-validator";
 import { RequestWithUser } from "../globalTypes/RequestWithUser";
@@ -80,7 +80,7 @@ export class SavedRecipeController {
     res: Response,
     codeMap: { [code: string]: number }
   ): void {
-    const code = err.code || "unknown_error";
+    const code = err.code ?? "unknown_error";
     const status = codeMap[code] || 500;
 
     if (status === 500) {

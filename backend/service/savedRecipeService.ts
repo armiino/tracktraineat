@@ -73,6 +73,7 @@ export function savedRecipeService(
         return await repo.getSavedRecipes(userId);
       } catch (err: any) {
         const error = new Error("Fehler beim Laden der gespeicherten Rezepte");
+        console.error("Fehler bei getALL Funktion", err);
         (error as any).code = "load_saved_recipes_failed";
         throw error;
       }
@@ -83,6 +84,7 @@ export function savedRecipeService(
         await repo.deleteSavedRecipe(userId, spoonId);
       } catch (err: any) {
         const error = new Error("Fehler beim Löschen des Rezepts");
+        console.error("Fehler bei delete Funktion", err);
         (error as any).code = "saved_recipe_delete_failed";
         throw error;
       }

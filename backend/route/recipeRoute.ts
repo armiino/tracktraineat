@@ -3,11 +3,10 @@ import { RecipeController } from "../controller/recipeController";
 import { SpoonacularAdapter } from "../adapter/spoonacularAdapter";
 import { PostgresUserProfileAdapter } from "../adapter/PostgresUserProfileAdapter";
 import { userProfileService } from "../service/userProfileService";
-import { recipeService } from "../service/recipeService";
+import { recipeService, UserProfileService } from "../service/recipeService";
 import { requireAuth } from "../middleware/authMiddleware";
 import { prisma } from "../prisma";
 import { RecipePort } from "../adapter/port/RecipePort";
-import { UserProfileService } from "../service/recipeService";
 
 export const createRecipeRoute = (
   customRecipeProvider?: RecipePort,

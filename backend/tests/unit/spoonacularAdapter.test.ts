@@ -104,7 +104,7 @@ describe("SpoonacularAdapter", () => {
       carbs: 60,
     });
   });
-
+  // eslint-disable-next-line jest/expect-expect
   it(" throw wenn API key is missing", async () => {
     const adapter = new SpoonacularAdapter();
 
@@ -117,7 +117,7 @@ describe("SpoonacularAdapter", () => {
 
     process.env.SPOONACULAR_API_KEY = originalKey;
   });
-
+  // eslint-disable-next-line jest/expect-expect
   it("throw wrapped 404", async () => {
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 404 },
@@ -128,7 +128,7 @@ describe("SpoonacularAdapter", () => {
       code: "spoonacular_not_found",
     });
   });
-
+  // eslint-disable-next-line jest/expect-expect
   it("throw wrapped 403", async () => {
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 403 },
@@ -139,7 +139,7 @@ describe("SpoonacularAdapter", () => {
       code: "spoonacular_auth_error",
     });
   });
-
+  // eslint-disable-next-line jest/expect-expect
   it("throw unknown error", async () => {
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 500 },
