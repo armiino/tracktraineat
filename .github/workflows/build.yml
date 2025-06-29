@@ -75,9 +75,8 @@ jobs:
 
       - name: Run Frontend Tests with Coverage
         run: |
-         cd frontend
+          cd frontend
           npx jest --coverage
-
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
