@@ -105,33 +105,36 @@ describe("SpoonacularAdapter", () => {
     });
   });
 
-it("throw wenn API key is missing", async () => {
-  expect.assertions(1);
+  it("throw wenn API key is missing", async () => {
+    expect.assertions(1);
 
-  const adapter = new SpoonacularAdapter();
-  const originalKey = process.env.SPOONACULAR_API_KEY;
-  delete process.env.SPOONACULAR_API_KEY;
+    const adapter = new SpoonacularAdapter();
+    const originalKey = process.env.SPOONACULAR_API_KEY;
+    delete process.env.SPOONACULAR_API_KEY;
 
-  try {
-    await adapter.searchRecipesByCaloriesAndProtein(500, 30, "omnivore");
-  } catch (err) {
-    expect((err as Error).message).toBe("API-Key fehlt");
-  } finally {
-    process.env.SPOONACULAR_API_KEY = originalKey;
-  }
-});
-
+    try {
+      await adapter.searchRecipesByCaloriesAndProtein(500, 30, "omnivore");
+    } catch (err) {
+      expect((err as Error).message).toBe("API-Key fehlt");
+    } finally {
+      process.env.SPOONACULAR_API_KEY = originalKey;
+    }
+  });
 
   it("throw wrapped 404", async () => {
-    expect.assertions(1); 
+    expect.assertions(1);
+
     mockedAxios.get.mockRejectedValueOnce({
       response: { status: 404 },
     });
 
     const adapter = new SpoonacularAdapter();
-    await expect(adapter.getRecipeDetails(99999)).rejects.toMatchObject({
-      code: "spoonacular_not_found",
-    });
+
+    try {
+      await adapter.getRecipeDetails(99999);
+    } catch (err) {
+      expect(err).toMatchObject({ code: "spoonacular_not_found" });
+    }
   });
 
   it("throw wrapped 403", async () => {
@@ -141,9 +144,12 @@ it("throw wenn API key is missing", async () => {
     });
 
     const adapter = new SpoonacularAdapter();
-    await expect(adapter.getRecipeDetails(1)).rejects.toMatchObject({
-      code: "spoonacular_auth_error",
-    });
+
+    try {
+      await adapter.getRecipeDetails(1);
+    } catch (err) {
+      expect(err).toMatchObject({ code: "spoonacular_auth_error" });
+    }
   });
 
   it("throw unknown error", async () => {
@@ -153,8 +159,11 @@ it("throw wenn API key is missing", async () => {
     });
 
     const adapter = new SpoonacularAdapter();
-    await expect(adapter.getRecipeDetails(1)).rejects.toMatchObject({
-      code: "spoonacular_unknown_error",
-    });
+
+    try {
+      await adapter.getRecipeDetails(1);
+    } catch (err) {
+      expect(err).toMatchObject({ code: "spoonacular_unknown_error" });
+    }
   });
 });
