@@ -1,8 +1,32 @@
 import axios from "axios";
 import { RecipePort } from "./port/RecipePort";
 
+import axiosRetry from "axios-retry";
+
+//Retry logik um adapter "ausfallsicher" zu machen - ziel
+axiosRetry(axios, {
+  retries: 2,
+  retryDelay: (retryCount) => {
+    console.log(`Retry Versuch #${retryCount}`);
+    return retryCount * 1000;
+  },
+  retryCondition: (error) => {
+    const status = error?.response?.status;
+    return (
+      axiosRetry.isNetworkError(error) ||
+      axiosRetry.isRetryableError(error) ||
+      (typeof status === "number" &&
+        [401, 400, 402, 429, 500, 502, 503].includes(status)) //einfach bei allen fehlern
+    );
+  },
+  onRetry: (retryCount, error, requestConfig) => {
+    console.log(`Retry #${retryCount} für Anfrage: ${requestConfig.url}`);
+  },
+});
+
 export class SpoonacularAdapter implements RecipePort {
   // private readonly apiKey: string | undefined = process.env.SPOONACULAR_API_KEY;
+  constructor(private axiosInstance: import("axios").AxiosInstance = axios) {} //nltig für den test
   private get apiKey(): string | undefined {
     return process.env.SPOONACULAR_API_KEY;
   }
@@ -34,7 +58,7 @@ export class SpoonacularAdapter implements RecipePort {
     const diet = this.mapDietTypeToSpoonacular(dietType);
 
     try {
-      const response = await axios.get(
+      const response = await this.axiosInstance.get(
         `${this.baseUrl}/recipes/complexSearch`,
         {
           params: {
@@ -91,7 +115,7 @@ export class SpoonacularAdapter implements RecipePort {
     this.ensureApiKey();
 
     try {
-      const { data } = await axios.get(
+      const { data } = await this.axiosInstance.get(
         `${this.baseUrl}/recipes/${spoonId}/information`,
         {
           params: {
