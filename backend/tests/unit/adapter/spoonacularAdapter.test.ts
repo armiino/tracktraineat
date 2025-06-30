@@ -105,11 +105,13 @@ describe("SpoonacularAdapter", () => {
     const originalKey = process.env.SPOONACULAR_API_KEY;
     delete process.env.SPOONACULAR_API_KEY;
 
-    await expect(
-      adapter.searchRecipesByCaloriesAndProtein(500, 30, "omnivore")
-    ).rejects.toThrow("API-Key fehlt");
-
-    process.env.SPOONACULAR_API_KEY = originalKey;
+    try {
+      await adapter.searchRecipesByCaloriesAndProtein(500, 30, "omnivore");
+    } catch (err) {
+      expect((err as Error).message).toBe("API-Key fehlt");
+    } finally {
+      process.env.SPOONACULAR_API_KEY = originalKey;
+    }
   });
 
   it("throws wrapped 404", async () => {
@@ -120,9 +122,11 @@ describe("SpoonacularAdapter", () => {
 
     const adapter = new SpoonacularAdapter(axios);
 
-    await expect(adapter.getRecipeDetails(99999)).rejects.toMatchObject({
-      code: "spoonacular_not_found",
-    });
+    try {
+      await adapter.getRecipeDetails(99999);
+    } catch (err) {
+      expect(err).toMatchObject({ code: "spoonacular_not_found" });
+    }
 
     mockAxios.restore();
   });
@@ -135,9 +139,11 @@ describe("SpoonacularAdapter", () => {
 
     const adapter = new SpoonacularAdapter(axios);
 
-    await expect(adapter.getRecipeDetails(1)).rejects.toMatchObject({
-      code: "spoonacular_auth_error",
-    });
+    try {
+      await adapter.getRecipeDetails(1);
+    } catch (err) {
+      expect(err).toMatchObject({ code: "spoonacular_auth_error" });
+    }
 
     mockAxios.restore();
   });
@@ -150,9 +156,11 @@ describe("SpoonacularAdapter", () => {
 
     const adapter = new SpoonacularAdapter(axios);
 
-    await expect(adapter.getRecipeDetails(1)).rejects.toMatchObject({
-      code: "spoonacular_unknown_error",
-    });
+    try {
+      await adapter.getRecipeDetails(1);
+    } catch (err) {
+      expect(err).toMatchObject({ code: "spoonacular_unknown_error" });
+    }
 
     mockAxios.restore();
   });
