@@ -2,6 +2,7 @@ import axios from "axios";
 import { RecipePort } from "./port/RecipePort";
 
 import axiosRetry from "axios-retry";
+import type { AxiosInstance } from "axios";
 
 //Retry logik um adapter "ausfallsicher" zu machen - ziel
 axiosRetry(axios, {
@@ -26,7 +27,7 @@ axiosRetry(axios, {
 
 export class SpoonacularAdapter implements RecipePort {
   // private readonly apiKey: string | undefined = process.env.SPOONACULAR_API_KEY;
-  constructor(private axiosInstance: import("axios").AxiosInstance = axios) {} //nltig für den test
+constructor(private readonly axiosInstance: AxiosInstance = axios) {}
   private get apiKey(): string | undefined {
     return process.env.SPOONACULAR_API_KEY;
   }

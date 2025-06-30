@@ -99,6 +99,8 @@ describe("SpoonacularAdapter", () => {
   });
 
   it("throws when API key is missing", async () => {
+    expect.assertions(1);
+
     const adapter = new SpoonacularAdapter();
     const originalKey = process.env.SPOONACULAR_API_KEY;
     delete process.env.SPOONACULAR_API_KEY;
@@ -111,6 +113,8 @@ describe("SpoonacularAdapter", () => {
   });
 
   it("throws wrapped 404", async () => {
+    expect.assertions(1);
+
     const mockAxios = new MockAdapter(axios);
     mockAxios.onGet(/information/).reply(404);
 
@@ -124,6 +128,8 @@ describe("SpoonacularAdapter", () => {
   });
 
   it("throws wrapped 403", async () => {
+    expect.assertions(1);
+
     const mockAxios = new MockAdapter(axios);
     mockAxios.onGet(/information/).reply(403);
 
@@ -137,6 +143,8 @@ describe("SpoonacularAdapter", () => {
   });
 
   it("throws unknown error", async () => {
+    expect.assertions(1);
+
     const mockAxios = new MockAdapter(axios);
     mockAxios.onGet(/information/).reply(500);
 
@@ -149,7 +157,7 @@ describe("SpoonacularAdapter", () => {
     mockAxios.restore();
   });
 
-  it("ein retry und dann korrect", async () => {
+  it("ein retry und dann korrekt", async () => {
     const axiosInstance = axios.create();
     axiosRetry(axiosInstance as any, {
       retries: 2,
