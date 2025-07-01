@@ -1,0 +1,282 @@
+workspace {
+
+  model {
+    guest = person "Gastbenutzer" {
+      description "Nicht authentifizierter Benutzer – nutzt nur den öffentlichen Kalorienrechner."
+    }
+
+    user = person "Eingeloggter Benutzer" {
+      description "Registrierter Benutzer mit Login – nutzt alle personalisierten Funktionen."
+    }
+
+    system = softwareSystem "TrackTrainEat" {
+      description "Web-Anwendung zur personalisierten Ernährungsempfehlung."
+
+      // Container: Frontend
+      frontend = container "Frontend (React)" {
+        technology "React, TypeScript, Vite"
+        description "Single Page Application im Browser. Stellt UI dar, verwaltet Sessions, ruft REST-Endpunkte ab."
+
+        guest -> this "Verwendet für Kalorienrechner"
+        user -> this "Verwendet für Profil, Rezepte und Planung"
+      }
+
+      // Container: Backend
+      backend = container "Backend (Express + Prisma)" {
+        technology "Node.js, TypeScript, Express, Prisma"
+        description "REST API mit Authentifizierung, Rezept- und Profil-Logik"
+
+        frontend -> this "Ruft REST-API-Endpunkte auf"
+      }
+
+      // Container: Datenbank
+      db = container "PostgreSQL" {
+        technology "Docker-PostgreSQL + Prisma"
+        description "Persistenzschicht für Benutzer, Profile und gespeicherte Rezepte"
+
+        backend -> this "Speichert/liest Daten"
+      }
+    }
+
+    // Externes System
+    spoonacularSystem = softwareSystem "Spoonacular API" external {
+      description "Externe HTTP-REST-API für Rezept- und Nährwertdaten"
+    }
+
+    // Beziehung zu externem System
+    backend -> spoonacularSystem "Ruft Rezepte und Details ab"
+  }
+
+  views {
+    systemContext system {
+      include *
+      autolayout lr
+      title "Kontextdiagramm – TrackTrainEat (mit Gast & Benutzer)"
+    }
+
+    container system {
+      include *
+      autolayout lr
+      title "Containerdiagramm – TrackTrainEat"
+    }
+
+    theme default
+  }
+}
+
+
+---------------
+
+
+
+zweite:
+workspace {
+
+  model {
+    user = person "Eingeloggter Benutzer"
+
+    system = softwareSystem "TrackTrainEat" {
+      description "Web-Anwendung zur personalisierten Ernährungsempfehlung."
+
+      // Frontend-Container mit Komponenten
+      frontend = container "Frontend (React + Vite)" {
+        technology "React, TypeScript, Vite"
+        description "SPA mit feature-basierter Struktur für UI und API-Aufrufe"
+
+        dashboard = component "Dashboard Feature" {
+          description "Verwaltet die Anzeige und Interaktion rund um Tagesbedarf, Empfehlungen usw."
+        }
+
+        auth = component "Auth Feature" {
+          description "Login, Registrierung und Sessionhandling via Cookies"
+        }
+
+        profile = component "Profile Feature" {
+          description "Pflegt Gesundheitsprofil und synchronisiert es mit Backend"
+        }
+
+        recipe = component "Recipe Feature" {
+          description "Zeigt Vorschläge, favorisiert Rezepte und stellt Mealplans dar"
+        }
+
+        // Beziehungen von User zu Komponenten
+        user -> dashboard "Verwendet Dashboard"
+        user -> auth "Loggt sich ein / registriert sich"
+        user -> profile "Bearbeitet Profil"
+        user -> recipe "Sucht und plant Rezepte"
+      }
+
+      // Backend-Container mit Komponenten
+      backend = container "Backend (Express + TypeScript)" {
+        technology "Node.js, TypeScript, Express"
+        description "REST-API mit Business-Logik, Authentifizierung und externen Integrationen"
+
+        controller = component "Controller Layer" {
+          description "Express-HTTP-Controller – nimmt Requests entgegen"
+        }
+
+        service = component "Service Layer" {
+          description "Enthält reine Anwendungslogik, losgelöst von Frameworks"
+        }
+
+        ports = component "Ports" {
+          description "Interfaces zur Anbindung von Datenbanken oder APIs"
+        }
+
+        adapterPrisma = component "Adapter – Prisma" {
+          description "Implementiert Port zur PostgreSQL-Datenbank via Prisma"
+        }
+
+        adapterSpoonacular = component "Adapter – Spoonacular" {
+          description "Kommuniziert mit externer Rezept-API"
+        }
+
+        // Beziehungen innerhalb des Backends
+        controller -> service
+        service -> ports
+        ports -> adapterPrisma
+        ports -> adapterSpoonacular
+      }
+
+      db = container "PostgreSQL" {
+        technology "Relationale DB, verwaltet via Prisma"
+        description "Speichert Benutzer-, Profil- und Rezeptdaten"
+      }
+
+      // Beziehungen zwischen Containern
+      user -> frontend "Verwendet im Browser"
+      frontend -> backend "Spricht REST-Endpunkte an"
+      backend -> db "Liest/Schreibt Gesundheits- und Rezeptdaten"
+    }
+
+    // Externes System
+    spoonacular = softwareSystem "Spoonacular API" external {
+      description "Externe Rezept- und Nährwertdatenquelle"
+    }
+
+    // Backend spricht externe API an
+    backend -> spoonacular "Fragt Rezepte und Nährwerte ab"
+  }
+
+  views {
+    systemContext system {
+      include *
+      autolayout lr
+      title "Kontextdiagramm – TrackTrainEat"
+    }
+
+    container system {
+      include *
+      autolayout lr
+      title "Containerdiagramm – TrackTrainEat"
+    }
+
+    component backend {
+      include *
+      autolayout lr
+      title "Komponentendiagramm – Backend"
+    }
+
+    component frontend {
+      include *
+      autolayout lr
+      title "Komponentendiagramm – Frontend"
+    }
+
+    theme default
+  }
+}
+----------
+Komponenten diagramm backend:
+workspace {
+
+  model {
+    user = person "Benutzer:in"
+
+    system = softwareSystem "TrackTrainEat" {
+      backend = container "Backend (Express + TypeScript)" {
+        technology "Node.js, Express, Prisma"
+        description "Bietet REST-API für Authentifizierung, Rezeptmanagement und Profilberechnung."
+
+        // Komponenten
+        authController = component "AuthController" {
+          description "Verwaltet Registrierung, Login, Logout, Validierung"
+        }
+
+        userProfileController = component "UserProfileController" {
+          description "Erstellt und aktualisiert Benutzerprofile"
+        }
+
+        recipeController = component "RecipeController" {
+          description "Verwaltet Rezeptsuche und Mahlzeitenpläne"
+        }
+
+        savedRecipeController = component "SavedRecipeController" {
+          description "Verwaltet gespeicherte Rezepte des Benutzers"
+        }
+
+        calculateController = component "CalculateController" {
+          description "Berechnet Kalorienbedarf basierend auf Anfrage-Daten"
+        }
+
+        calculateProfileController = component "CalculateProfileController" {
+          description "Berechnet Kalorienbedarf basierend auf Benutzerprofil"
+        }
+
+        authService = component "AuthService" {
+          description "Regelt Benutzerregistrierung und Login-Logik"
+        }
+
+        userProfileService = component "UserProfileService" {
+          description "Geschäftslogik rund ums Benutzerprofil"
+        }
+
+        recipeService = component "RecipeService" {
+          description "Logik für Rezeptsuche, Nährwertanalyse, Mahlzeitenplanung"
+        }
+
+        savedRecipeService = component "SavedRecipeService" {
+          description "Logik zum Speichern, Laden, Löschen von Rezepten"
+        }
+
+        postgresAdapter = component "PostgresAdapter" {
+          description "Prisma-gestützte DB-Zugriffe auf User, Profile, Rezepte"
+        }
+
+        spoonacularAdapter = component "SpoonacularAdapter" {
+          description "Kommunikation mit externer Spoonacular API"
+        }
+
+        // Beziehungen
+        user -> authController "Registrierung, Login"
+        user -> recipeController "Rezeptsuche"
+        user -> userProfileController "Profilpflege"
+        user -> savedRecipeController "Rezepte speichern/laden"
+        user -> calculateController "Kalorienrechner"
+        user -> calculateProfileController "Analyse aus Profil"
+
+        authController -> authService
+        userProfileController -> userProfileService
+        recipeController -> recipeService
+        savedRecipeController -> savedRecipeService
+        calculateProfileController -> userProfileService
+
+        authService -> postgresAdapter
+        userProfileService -> postgresAdapter
+        recipeService -> spoonacularAdapter
+        recipeService -> userProfileService
+        savedRecipeService -> spoonacularAdapter
+        savedRecipeService -> postgresAdapter
+      }
+    }
+  }
+
+  views {
+    component backend {
+      include *
+      autolayout lr
+      title "Komponentendiagramm – Backend"
+    }
+    theme default
+  }
+} 
