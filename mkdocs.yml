@@ -17,7 +17,7 @@ nav:
   - Home: index.md
   - Arc42: arc42.md
   - Install: install.md
-  - Test: test.md
+  - C4-Modell: C4.md
   - ADRs:
       - Datenbank: adr/database-adr.md
       - Techstack: adr/techstack-adr.md

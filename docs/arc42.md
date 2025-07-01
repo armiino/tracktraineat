@@ -1,4 +1,5 @@
-# 1. Einführung und Ziele
+# ARC42 DOKUMENTATION
+## 1 Einführung und Ziele 
 
 ### 1.1 Essenzielle Funktionen der Anwendung
 
