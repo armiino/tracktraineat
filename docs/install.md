@@ -40,6 +40,8 @@ tracktraineat/
 
 Erstelle eine Datei namens `.env.docker` im Root:
 
+copy paste auch möglich, nur der spoonacular API-Key muss getauscht werden.
+
 ```env
 # PostgreSQL DB
 POSTGRES_USER=postgresUser
@@ -72,6 +74,7 @@ Sobald alle Container laufen:
 - Backend: [http://localhost:8000](http://localhost:8000)
 - Frontend: [http://localhost:5173](http://localhost:5173)
 
+Bei lokaler entwicklung und Nutzung ohne docker muss im backend Ordner eine .env angelegt werden!!
 ---
 
 ## Datenbank

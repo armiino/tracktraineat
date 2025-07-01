@@ -18,6 +18,11 @@ nav:
   - Arc42: arc42.md
   - Install: install.md
   - C4-Modell: C4.md
+  - SQS:
+      - Techstack: SQS/Techstack.md
+      - C4: SQS/C4.md
+      - Test-Strategie: SQS/test.md
+      - Ausfallsicherheit: SQS/Ausfallsicherheit.md
   - ADRs:
       - Datenbank: adr/database-adr.md
       - Techstack: adr/techstack-adr.md
