@@ -22,11 +22,10 @@ Die Spoonacular-Kommunikation erfolgt über das Interface `RecipePort`, das von 
 
 ```plaintext
 [Service] → [RecipePort] → [SpoonacularAdapter] → [Spoonacular API]
-````
+```
 
 Diese Entkopplung erhöht die Testbarkeit und erlaubt z. B. das Mocking des Ports für Unit- und Integrationstests.
 
----
 
 ### 2. Retry-Logik mit `axios-retry`
 
