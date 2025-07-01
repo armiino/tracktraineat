@@ -1,7 +1,7 @@
 ---
 status: "accepted"
 date: 2025-06-30
-decision-makers: [Alleinentwickler:in dieses Projekts]
+decision-makers: [Armin Merdan]
 consulted: []
 informed: []
 ---

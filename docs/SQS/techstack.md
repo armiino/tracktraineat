@@ -11,7 +11,7 @@ Die folgende Übersicht zeigt die eingesetzten Technologien in den verschiedenen
 | Ebene | Prinzip |
 |-------|---------|
 | **Backend** | Hexagonale Architektur (Ports & Adapters) |
-| **Frontend** | SPA (Single Page Application) mit komponentenbasierter Struktur |
+| **Frontend** | WebApp mit feature-basierter Struktur |
 | **Gesamtsystem** | 3-Schichten-Architektur + externe API + Infrastruktur via Docker |
 
 ---
@@ -46,7 +46,7 @@ Die folgende Übersicht zeigt die eingesetzten Technologien in den verschiedenen
 | Typ | Tools |
 |-----|-------|
 | Unit/Component Tests | `Jest`, `React Testing Library (RTL)` |
-| E2E Tests | `Playwright` |
+| E2E Tests | `Playwright: npx playwright test --worker=1` |
 | Coverage | `jest --coverage` |
 | Mocking | `axios-mock-adapter`, `jest.fn()` etc. |
 
@@ -73,8 +73,8 @@ Die folgende Übersicht zeigt die eingesetzten Technologien in den verschiedenen
 |-----|-------|
 | Unit Tests | `Jest`, `ts-jest` |
 | Integration Tests | `Supertest`, `axios-mock-adapter`, `Nock` |
-| E2E / API Tests | `Supertest` mit vollständigen Flows |
-| Coverage | `jest --coverage` |
+| API Tests | `Supertest` mit vollständigen Flows |
+| Coverage | `npx jest --coverage` |
 
 ---
 
@@ -111,5 +111,5 @@ Die folgende Übersicht zeigt die eingesetzten Technologien in den verschiedenen
 ---
 
 > **Hinweis:**  
-Das Projekt nutzt ein sicheres Token-basiertes Authentifizierungssystem (JWT) und testet abgesicherte Endpunkte auch im Rahmen von Penetrationstest-ähnlichen Integrationstests (z. B. Zugriffsschutz von `/api/profile/me`).
+Das Projekt nutzt ein sicheres Token-basiertes Authentifizierungssystem (JWT) und testet abgesicherte Endpunkte auch im Rahmen von Penetrationstest-ähnlichen Integrationstests.
 
