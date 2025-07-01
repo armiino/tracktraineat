@@ -1,6 +1,6 @@
 # 1. Einführung und Ziele
 
-## 1.1 Essenzielle Funktionen der Anwendung
+### 1.1 Essenzielle Funktionen der Anwendung
 
 **TrackTrainEat** ist eine Webanwendung zur individuellen Ernährungsplanung auf Basis persönlicher Gesundheitsdaten. Sie besteht aus einem React-Frontend und einem Node.js-/Express-Backend mit PostgreSQL-Datenbank und externer Rezeptanbindung über die Spoonacular API.
 
@@ -21,7 +21,7 @@ Die Anwendung bietet:
 - **Frontend mit interaktivem Dashboard**, dynamischem State und Validierung
 - **Geschützte Routen** für sensitive Bereiche (z. B. Profil, gespeicherte Rezepte)
 
-## 1.2 Qualitätsziele
+### 1.2 Qualitätsziele
 
 | Ziel                  | Umsetzung                                                                 |
 |------------------------|--------------------------------------------------------------------------|
@@ -35,7 +35,7 @@ Die Anwendung bietet:
 | **Nachvollziehbarkeit** | Logging, konsistente Fehlercodes & Statusantworten                      |
 
 
-## 1.3 Relevante Stakeholder und ihre Erwartungen
+### 1.3 Relevante Stakeholder und ihre Erwartungen
 
 | Stakeholder          | Erwartungen / Anforderungen                                                      |
 |----------------------|-----------------------------------------------------------------------------------|
@@ -48,7 +48,7 @@ Die Anwendung bietet:
 
 ## 2. Randbedingungen
 
-## 2.1 Technische Einschränkungen
+### 2.1 Technische Einschränkungen
 
 | Einschränkung                  | Beschreibung                                                                 |
 |--------------------------------|------------------------------------------------------------------------------|
@@ -60,7 +60,7 @@ Die Anwendung bietet:
 | **Schnittstellenbindung**     | Die Anwendung ist technisch an die Spoonacular API gebunden. Ohne API-Key ist der Funktionsumfang eingeschränkt. |
 | **Konfiguration über Umgebungsvariablen** | Der Betrieb erfordert `.env`-Dateien sowohl lokal als auch im Docker-Setup. |
 
-## 2.2 Organisatorische Einschränkungen
+### 2.2 Organisatorische Einschränkungen
 
 | Einschränkung                     | Beschreibung                                                                |
 |-----------------------------------|-----------------------------------------------------------------------------|
@@ -69,7 +69,7 @@ Die Anwendung bietet:
 | **API-Zugang limitiert**          | Der Zugriff auf Spoonacular ist nur mit gültigem API-Key möglich. Es gelten dort Kontingentgrenzen. |
 | **Nur Online-Betrieb**            | Offline-Betrieb ist nicht vorgesehen, da essentielle Funktionen vom Online-Zugriff abhängen. |
 
-## 2.3 Externe Abhängigkeiten
+### 2.3 Externe Abhängigkeiten
 
 | Abhängigkeit               | Beschreibung                                                                    |
 |---------------------------|----------------------------------------------------------------------------------|
@@ -80,7 +80,7 @@ Die Anwendung bietet:
 
 ## 3. Kontextabgrenzung
 
-## 3.1 Systemübersicht
+### 3.1 Systemübersicht
 
 Das System "TrackTrainEat" ist eine browserbasierte Anwendung zur personalisierten Ernährungsplanung. Es besteht aus einem React-Frontend und einem Node.js-Backend mit PostgreSQL-Datenbank.
 
@@ -101,7 +101,7 @@ Das System steht im Austausch mit:
 | **Browser (HTTP-Client)** | Sendet Cookies für Authentifizierung automatisch mit Requests |
 | **Datenbank (PostgreSQL)** | Persistenzschicht, wird über Prisma im Backend angesprochen |
 
-## 3.3 Schnittstellenbeschreibung (fachlich)
+### 3.3 Schnittstellenbeschreibung (fachlich)
 
 | Schnittstelle              | Beschreibung |
 |----------------------------|--------------|
@@ -115,7 +115,7 @@ Das System steht im Austausch mit:
 
 ![Kontextdiagramm](img/Kontextdiagram.png)
 
-### Erläuterung zum Kontextdiagramm
+ **Erläuterung zum Kontextdiagramm**
 
 Das Kontextdiagramm veranschaulicht die Systemumgebung von **TrackTrainEat** und zeigt, wie das System mit externen Akteuren und Nachbarsystemen interagiert.
 
@@ -137,7 +137,7 @@ Die zentralen Architekturentscheidungen sind dokumentiert in folgenden ADRs:
 - [Datenbank und ORM](../docs/adr/database-adr.md)
 - [Architekturansatz (Ports & Adapters)](../docs/adr/architektur-adr.md)
 
-## 4.1 Technologieentscheidungen
+### 4.1 Technologieentscheidungen
 
 
 | Bereich      | Entscheidung                                                                 |
@@ -149,7 +149,7 @@ Die zentralen Architekturentscheidungen sind dokumentiert in folgenden ADRs:
 | **Datenbank**| PostgreSQL im Docker-Container                                               |
 | **Integration** | REST-Anbindung an Spoonacular API für externe Rezept- und Nährwertdaten   |
 
-## 4.2 Architekturentscheidungen
+### 4.2 Architekturentscheidungen
 
 Im Backend kommt eine klar strukturierte, teilweise **Hexagonale Architektur (Ports & Adapters)** zum Einsatz (siehe [ADR-0003](../docs/adr/architektur.md)). Ziel war es, Geschäftslogik, Web/API-Zugriff, Datenzugriff und externe Services strikt voneinander zu trennen.
 
@@ -167,7 +167,7 @@ Diese Architektur erleichtert:
 - **Erweiterbarkeit** zB. durch alternative Datenquellen oder APIs
 
 
-## 4.3 Einhaltung von Qualitätszielen
+### 4.3 Einhaltung von Qualitätszielen
 
 | Qualitätsziel           | Lösungsansatz |
 |--------------------------|---------------|
@@ -178,7 +178,7 @@ Diese Architektur erleichtert:
 | **Robustheit**            | Validierung, Logging, Fehler-Handling und Retry-Mechanismen |
 | **Nachvollziehbarkeit**   | Logging, standardisierte Fehlerrückgaben mit Codes und Messages |
 
-## 4.4 Frontend-Architektur
+### 4.4 Frontend-Architektur
 
 Das Frontend von *TrackTrainEat* folgt einer **Feature-basierten Struktur**, bei der jedes funktionale Modul (zB. Authentifizierung, Profil, Rezepte) in einem eigenen Verzeichnis gekapselt ist. Diese Aufteilung verbessert die Wartbarkeit. 
 
@@ -202,14 +202,14 @@ Diese Struktur ermöglicht eine klare Skalierung der Anwendung, einfache Erweite
 
 Dieses Kapitel beschreibt die wichtigsten Software-Bausteine des Systems *TrackTrainEat* und deren Zusammenhänge. Ziel ist es, die interne Struktur und die Verantwortlichkeiten der einzelnen Komponenten nachvollziehbar darzustellen.
 
-## 5.1 Überblick
+### 5.1 Überblick
 
 Die Anwendung besteht aus mehreren klar getrennten Schichten und Modulen, die teilweise der hexagonalen Architektur folgen. Dies ermöglicht eine hohe Modularität, gute Testbarkeit und Austauschbarkeit von Komponenten.
 
 Das System gliedert sich grob in:
 
 
-## 5.2 Backend Whitebox
+### 5.2 Backend Whitebox
 
 ![whitebox-backend](img/whitebox-backend.png)
 
@@ -217,7 +217,7 @@ Das System gliedert sich grob in:
 
 Das Backend ist modular aufgebaut und gliedert sich in folgende Bausteine:
 
-### Controller  
+#### Controller  
 Verantwortlich für die Entgegennahme und Validierung von HTTP-Anfragen sowie die Koordination der Geschäftslogik.
 
 - **AuthController**: Registrierung und Login der Nutzer.  
@@ -225,7 +225,7 @@ Verantwortlich für die Entgegennahme und Validierung von HTTP-Anfragen sowie di
 - **RecipeController**: Rezeptsuche, Rezeptdetails und Mahlzeitenplanung.  
 - **SavedRecipeController**: Verwaltung von gespeicherten Lieblingsrezepten.
 
-### Services  
+#### Services  
 Implementieren die Geschäftslogik und arbeiten über Schnittstellen (Ports) mit Datenquellen.
 
 - **AuthService**: Geschäftslogik für Authentifizierung.  
@@ -233,7 +233,7 @@ Implementieren die Geschäftslogik und arbeiten über Schnittstellen (Ports) mit
 - **RecipeService**: Rezeptlogik, Anbindung an externe Rezept-API.  
 - **SavedRecipeService**: Verwaltung und Abruf gespeicherter Rezepte.
 
-### Ports (Interfaces)  
+#### Ports (Interfaces)  
 Definieren Schnittstellen zur Anbindung von Adaptern, um Implementierungsdetails zu kapseln.
 
 - **UserRepository**: Schnittstelle zur Benutzerverwaltung.  
@@ -241,7 +241,7 @@ Definieren Schnittstellen zur Anbindung von Adaptern, um Implementierungsdetails
 - **SavedRecipeRepository**: Schnittstelle für Favoritenverwaltung.  
 - **RecipePort**: Schnittstelle zur Rezeptdatenbeschaffung (externe API).
 
-### Adapter  
+#### Adapter  
 Konkrete Implementierungen der Ports, die mit der Datenbank oder externen APIs kommunizieren.
 
 - **PostgresUserAdapter**: Zugriff auf Benutzer-Datenbanktabellen via Prisma.  
@@ -249,11 +249,11 @@ Konkrete Implementierungen der Ports, die mit der Datenbank oder externen APIs k
 - **PostgresSavedRecipeAdapter**: Zugriff auf Rezeptfavoriten-Datenbanktabellen.  
 - **SpoonacularAdapter**: Kommunikation mit der externen Rezept-API.
 
-### Datenbank & Externe API  
+#### Datenbank & Externe API  
 - **PostgreSQL**: Persistente Speicherung.  
 - **Spoonacular API**: Externe Rezept- und Nährwertdatenquelle.
 
-### Kommunikationsfluss
+#### Kommunikationsfluss
 
 Die Pfeile im Diagramm zeigen den Aufruffluss:
 
@@ -262,7 +262,7 @@ Die Pfeile im Diagramm zeigen den Aufruffluss:
 Dies entspricht dem Prinzip der Hexagonalen Architektur (Ports & Adapters), wobei der Service die Geschäftslogik kapselt und die Adapter die konkrete technische Umsetzung übernehmen.
 
 
-## 5.3 Frontend Whitebox
+### 5.3 Frontend Whitebox
 
 ![whitebox-frontend](img/whitebox-frontend.png)
 
@@ -274,37 +274,37 @@ Das Frontend besteht aus folgenden Komponenten, die den Nutzerfluss und UI-Funkt
 - **MyRecipes**: Anzeige und Verwaltung von gespeicherten Rezepten.  
 - **Profile**: Pflege und Anzeige von Benutzerprofilen.
 
-### Kommunikation
+#### Kommunikation
 
 Das Frontend kommuniziert mit dem Backend über definierte REST-Endpunkte für Authentifizierung, Profilmanagement, Rezeptsuche und Speicherung.
 
 
-## 5.4 Zusammenfassung
+### 5.4 Zusammenfassung
 
 Die Baustein-Sicht zeigt eine klare Trennung zwischen den verschiedenen Verantwortlichkeiten der Komponenten und die saubere Anbindung von Datenquellen durch Ports und Adapter.  
 
 Das Design unterstützt Modularität, Testbarkeit und einfache Erweiterbarkeit des Systems.
 
-# Kapitel 6: Laufzeitsicht
+## Kapitel 6: Laufzeitsicht
 
 In diesem Kapitel wird das dynamische Verhalten des Systems anhand von Sequenzdiagrammen dargestellt. Die Diagramme zeigen die Abläufe und Interaktionen zwischen Benutzer, Frontend, Backend-Komponenten, Datenbanken und externen Systemen. Dabei wird der Fokus auf die wichtigsten Anwendungsfälle gelegt, um die Architektur und die Ablauflogik transparent und nachvollziehbar zu machen. Es handelt sich um viel Logik wodurch die Diagramme der Übersichthalber aufgeteilt wurden statt alles in einem. Das Error-handling wird hier ebenfalls nicht zu 100% betrachtet - da es mehr darum geht zu verstehen wie der Ablauf in Sequenzen ist!
 
 
-## Registrierung
+**Registrierung**
 
 ![register-laufzeit](img/register-laufzeit.png)
 
 Der Registrierungs-Flow beschreibt, wie ein neuer Benutzer seine Daten (E-Mail und Passwort) an das Frontend sendet, welche diese an den AuthController weiterleitet. Der AuthService überprüft über das UserRepository, ob die E-Mail bereits existiert. Falls ja, wird ein Fehler zurückgegeben, andernfalls wird der Benutzer in der Datenbank gespeichert. Eine erfolgreiche Registrierung wird anschließend bestätigt.
 
 
-## Login
+**Login**
 
 ![login-laufzeit](img/login-laufzeit.png)
 
 Beim Login sendet der Benutzer seine Zugangsdaten an das Frontend, das sie an den AuthController weitergibt. Der AuthService prüft die Existenz des Benutzers und die Passwortgültigkeit via UserRepository. Bei falschen Zugangsdaten wird ein Fehler zurückgegeben, bei Erfolg wird ein JWT-Token erstellt und an das Frontend übermittelt.
 
 
-## Rezept speichern
+**Rezepte speichern**
 
 ![saverecipe-laufzeit](img/saverecipe-laufzeit.png)
 
@@ -312,7 +312,7 @@ Der Benutzer fordert das Speichern eines Rezepts an. Das Frontend leitet diese A
 
 
 
-## Profil erstellen/ändern
+**Profil erstellen/ändern**
 
 ![profile-laufzeit](img/profile-laufzeit.png)
 
@@ -321,7 +321,7 @@ Der Nutzer gibt Profildaten ein oder ändert diese. Diese werden vom Frontend an
 
 
 
-## Rezeptabruf und Mealplan-Generierung
+**ezeptabruf und Mealplan-Generierung**
 
 ![rezaptaufruf-laufzeit](img/rezeptaufruf-laufzeit.png)
 
@@ -332,11 +332,11 @@ Das Frontend fordert einen Mealplan an, der Benutzerpräferenzen und UserId enth
 
 Diese Sequenzdiagramme bieten einen umfassenden Einblick in die Abläufe innerhalb des Backends, die Interaktion mit externen Diensten und der Datenbank sowie die Einbindung des Frontends. Somit ist das Kapitel 6 - Laufzeitsicht vollständig abgedeckt.
 
-# Kapitel 7 – Verteilungssicht
+## Kapitel 7 – Verteilungssicht
 
 Dieses Kapitel beschreibt die Verteilung der Softwarekomponenten und Infrastruktur innerhalb der Entwicklungsumgebung von TrackTrainEat.
 
-## Systemübersicht
+ **Systemübersicht**
 
 ![verteilungsdiagram](img/Verteilungsdiagram.png)
 
@@ -355,7 +355,7 @@ Die Anwendung besteht aus mehreren Docker-Containern, die auf dem lokalen Entwic
 - **Externe Spoonacular API (Cloud)**  
   Die Backend-Komponente greift auf diese externe Cloud-API zu, um Rezept- und Nährwertdaten abzufragen.
 
-## Kommunikationsflüsse
+**Kommunikationsflüsse**
 
 - Der **User** nutzt den Webbrowser und ruft die Frontend-Webanwendung auf, die im Frontend-Container läuft.
 - Das **Frontend** kommuniziert mit dem **Backend** via HTTP REST API, um Daten wie Authentifizierung, Benutzerprofile, Rezeptinformationen und Analysen zu laden oder zu speichern.
@@ -363,7 +363,7 @@ Die Anwendung besteht aus mehreren Docker-Containern, die auf dem lokalen Entwic
 - Für Rezeptdaten ruft das Backend die externe **Spoonacular API** an, um aktuelle Rezept- und Nährwertinformationen zu erhalten.
 - Beim Start führt das Backend Migrationen auf der Datenbank durch, um das Schema aktuell zu halten.
 
-## Infrastruktur
+**Infrastruktur**
 
 Diese Verteilung unterstützt eine modulare und isolierte Entwicklungsumgebung, die über Docker Compose orchestriert wird. Jeder Dienst läuft in einem eigenen Container, was einfache Wartung, Skalierung und Unabhängigkeit gewährleistet.
 
@@ -371,11 +371,11 @@ Diese Verteilung unterstützt eine modulare und isolierte Entwicklungsumgebung, 
 
 Dieses Deployment-Diagramm und die Beschreibung erfüllen die Anforderungen der Verteilungssicht nach arc42, indem sie klar darstellen, wie die Softwarekomponenten verteilt und miteinander verbunden sind.
 
-# Kapitel 8 – Querschnittliche Konzepte
+## Kapitel 8 – Querschnittliche Konzepte
 
 Dieses Kapitel beschreibt allgemeine Konzepte und übergreifende technische Entscheidungen, die im gesamten System *TrackTrainEat* angewendet werden. Diese Konzepte gelten systemweit und erleichtern sowohl die Wartbarkeit als auch die Verständlichkeit des Systems.
 
-## 1. Architekturmuster
+### 8.1. Architekturmuster
 
 Das System folgt dem Prinzip der **Hexagonalen Architektur (Ports & Adapters)**:
 
@@ -406,7 +406,7 @@ Das Diagramm zeigt außerdem die klare Trennung der Schichten und Datenflüsse:
 Diese Struktur macht die Anwendung modular, testbar und erweiterbar und ist zentraler Bestandteil des Architekturkonzepts.
 
 
-## 2. Code- und Strukturkonventionen
+### 8.2. Code- und Strukturkonventionen
 
 - **Technologiestack Backend**: Node.js + Express + Prisma
 - **Technologiestack Frontend**: React + Vite + TypeScript
@@ -417,7 +417,7 @@ Diese Struktur macht die Anwendung modular, testbar und erweiterbar und ist zent
   - Trennung in Controller, Services, Ports, Adapter
   - Klare Separation von Verantwortlichkeiten pro Layer
 
-## 3. Validierung & Fehlerbehandlung
+### 8.3. Validierung & Fehlerbehandlung
 
 - Eingaben (z. B. bei Registrierung, Profilen) werden validiert via DTO-Logik und zentralen Klassen (z. B. `ProfileAdapter`).
 - Fehler werden domain-spezifisch behandelt, z. B.:
@@ -426,26 +426,26 @@ Diese Struktur macht die Anwendung modular, testbar und erweiterbar und ist zent
   - `spoonacular_auth_error`
 - Fehler werden in konsistenter Weise mit HTTP-Codes und JSON-Antworten an das Frontend gegeben.
 
-## 4. Datenzugriff & Persistenz
+### 8.4. Datenzugriff & Persistenz
 
 - **Prisma ORM** wird verwendet für den Zugriff auf eine **PostgreSQL-Datenbank**.
 - Migrationen und Schema-Generierung erfolgen automatisiert beim Starten des Containers.
 - Datenmodelle sind strikt typisiert und werden versioniert gepflegt.
 
-## 5. Sicherheit & Authentifizierung
+### 8.5. Sicherheit & Authentifizierung
 
 - Authentifizierung basiert auf **JWT (JSON Web Tokens)**.
 - Tokens werden beim Login generiert und in HTTP-Headern vom Frontend übermittelt.
 - Endpunkte im Backend prüfen die Gültigkeit des Tokens via Middleware.
 - Passwort-Hashing mit `bcrypt`.
 
-## 6. Kommunikation & externe Dienste
+### 8.6. Kommunikation & externe Dienste
 
 - Das System ruft die **Spoonacular API** zur Generierung von Rezepten und Nährwertdaten auf.
 - Externe Kommunikation ist gekapselt im `SpoonacularAdapter`.
 - Die API-Nutzung ist fehleranfällig – daher gibt es robustes Error-Handling mit semantischen Fehlercodes.
 
-## 7. Entwicklung & Deployment
+### 8.7. Entwicklung & Deployment
 
 - Lokale Entwicklung mit **Docker Compose**:
   - Container für Datenbank, Backend, Frontend
@@ -453,7 +453,7 @@ Diese Struktur macht die Anwendung modular, testbar und erweiterbar und ist zent
 - Datenbankdaten persistent über Volume `pgdata`
 - Entwicklungsumgebung spiegelt möglichst realistische Struktur wider
 
-## 8. Logging & Debugging
+### 8.8 Logging & Debugging
 
 - Konsolen-Logging im Backend zur Laufzeit - Fehler Codes werden erstellt und mitgeliefert
 - Im Frontend intepretiert dann eine handleApiError die codes und gibt Fehlermeldungen aus
@@ -539,7 +539,7 @@ Die Anwendung **TrackTrainEat** zielt darauf ab, Benutzer:innen bei einer person
 In diesem Kapitel werden potenzielle Risiken sowie bereits bekannte technische Schulden des Systems **TrackTrainEat** dokumentiert. Diese Liste ist nach **Priorität** sortiert, um bei Weiterentwicklung oder Wartung gezielt adressiert zu werden.
 
 
-### 🟥 Hochpriorisierte Risiken
+### Hochpriorisierte Risiken
 
 | Kategorie | Risiko | Beschreibung | Mögliche Maßnahme |
 |----------|--------|--------------|--------------------|
