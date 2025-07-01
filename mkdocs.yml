@@ -19,6 +19,6 @@ nav:
   - Install: install.md
   - Test: test.md
   - ADRs:
-      - Datenbank: adrs/database-adr.md
-      - Techstack: adrs/techstack-adr.md
-      - Architektur: architektur-adr.md
+      - Datenbank: adr/database-adr.md
+      - Techstack: adr/techstack-adr.md
+      - Architektur: adr/architektur-adr.md
