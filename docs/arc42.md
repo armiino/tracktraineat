@@ -78,7 +78,7 @@ Die Anwendung bietet:
 | **Prisma Migrations**      | Änderungen am Datenmodell erfordern korrekte Prisma-Migrationsabläufe. (ebenfalls in Install-Anleitung beschrieben) |
 | **Docker + Volumes**       | Die Docker-Umgebung nutzt persistente Volumes für die PostgreSQL-Datenbank. Probleme beim lokalen Setup (z. B. Volume-Zugriff) können auftreten. |
 
-# 3. Kontextabgrenzung
+## 3. Kontextabgrenzung
 
 ## 3.1 Systemübersicht
 
@@ -92,7 +92,7 @@ Das System steht im Austausch mit:
 - **Browser/Client** (für Sessionhandling via Cookies)
 - **Docker-Laufzeitumgebung** (für lokale Ausführung und Hosting)
 
-## 3.2 Kommunikationspartner (extern)
+### 3.2 Kommunikationspartner (extern)
 
 | Partner             | Beschreibung |
 |---------------------|--------------|
@@ -127,7 +127,7 @@ Beide Rollen interagieren über ein gemeinsames **Frontend**, das als Web-Applic
 
 Das Backend ist über eine Schnittstelle mit der **Spoonacular API** verbunden, um externe Rezeptdaten abzurufen, und verwendet eine eigene **PostgreSQL-Datenbank** zur Speicherung von Benutzer- und Profildaten.
 
-# 4. Lösungsstrategie
+## 4. Lösungsstrategie
 
 Die Architektur von **TrackTrainEat** orientiert sich an pragmatischen Prinzipien einer wartbaren, testbaren und erweiterbaren Webanwendung. Dabei wurden bewusst Technologien und Strukturen gewählt, die sowohl für die initiale Umsetzung als auch für zukünftige Anpassungen skalierbar sind.
 
@@ -198,7 +198,7 @@ Die App ist als **Web App** mit **React + Vite** umgesetzt, vollständig in **Ty
 
 Diese Struktur ermöglicht eine klare Skalierung der Anwendung, einfache Erweiterung durch neue Features und eine robuste UI-Logiktrennung.
 
-# 5 Baustein-Sicht
+## 5 Baustein-Sicht
 
 Dieses Kapitel beschreibt die wichtigsten Software-Bausteine des Systems *TrackTrainEat* und deren Zusammenhänge. Ziel ist es, die interne Struktur und die Verantwortlichkeiten der einzelnen Komponenten nachvollziehbar darzustellen.
 
