@@ -33,11 +33,11 @@ Chosen option: "Hexagonale Architektur (Ports & Adapters)", weil sie eine gute B
 
 ### Consequences
 
-* Good, weil die Geschäftslogik ist unabhängig von Express oder Prisma testbar
-* Good, weil die Datenzugriffsschicht ist durch Interfaces abstrahiert und austauschbar
-* Good, weil die Struktur erlaubt skalierbare Erweiterungen (neue Services, externe APIs etc.)
+* Gut, weil die Geschäftslogik ist unabhängig von Express oder Prisma testbar
+* Gut, weil die Datenzugriffsschicht ist durch Interfaces abstrahiert und austauschbar
+* Gut, weil die Struktur erlaubt skalierbare Erweiterungen (neue Services, externe APIs etc.)
 * Neutral, weil es sich um eine pragmatisch reduzierte Version von Clean Architecture handelt
-* Bad, weil der initiale Aufbau mit Interfaces, Adaptern und Struktur mehr Aufwand bedeutet
+* Schlecht, weil der initiale Aufbau mit Interfaces, Adaptern und Struktur mehr Aufwand bedeutet
 
 ### Confirmation
 
@@ -55,29 +55,27 @@ Das Backend zeigt damit einen konsistenten, hexagonal inspirierten Aufbau mit kl
 
 ### Hexagonale Architektur (Ports & Adapters)
 
-* Good, weil Testbarkeit, Lesbarkeit und Erweiterbarkeit gewährleistet sind
-* Good, weil technische Abhängigkeiten einfach austauschbar sind
-* Good, weil jede Schicht klar abgegrenzt ist (Controller ↔ Service ↔ Adapter)
+* Gut, weil Testbarkeit, Lesbarkeit und Erweiterbarkeit gewährleistet sind
+* Gut, weil technische Abhängigkeiten einfach austauschbar sind
+* Gut, weil jede Schicht klar abgegrenzt ist (Controller ↔ Service ↔ Adapter)
 * Neutral, weil etwas strukturierter als nötig für kleine Projekte
-* Bad, weil zusätzliche Abstraktion anfangs mehr Zeit kostet
+* Schlecht, weil zusätzliche Abstraktion anfangs mehr Zeit kostet
 
 ### Klassisches MVC
 
-* Good, weil einfacher Start und schnellere Umsetzung in kleinen Teams
-* Bad, weil Logik und Datenzugriffe oft vermischt werden
-* Bad, weil direkte Kopplung an Prisma, Express etc. Testbarkeit erschwert
-* Bad, weil langfristig schwerer wartbar und modular erweiterbar
+* Gut, weil einfacher Start und schnellere Umsetzung in kleinen Teams
+* Schlecht, weil Logik und Datenzugriffe oft vermischt werden
+* Schlecht, weil direkte Kopplung an Prisma, Express etc. Testbarkeit erschwert
+* Schlecht, weil langfristig schwerer wartbar und modular erweiterbar
 
 ### Clean Architecture
 
-* Good, weil maximale Trennung und hohe Skalierbarkeit
-* Bad, weil hoher konzeptioneller Overhead für kleine/mittlere Projekte
-* Bad, weil viele Layer, auch wenn nur leicht genutzte UseCases vorhanden wären
+* Gut, weil maximale Trennung und hohe Skalierbarkeit
+* Schlecht, weil hoher konzeptioneller Overhead für kleine/mittlere Projekte
+* Schlecht, weil viele Layer, auch wenn nur leicht genutzte UseCases vorhanden wären
 
 ## More Information
 
 Die Architektur ist stark an die hexagonale Struktur angelehnt, aber pragmatisch umgesetzt:  
 Auf explizite UseCases oder Presenter-Schichten wird bewusst verzichtet, um unnötige Komplexität zu vermeiden.  
 Der Fokus liegt auf einer **isolierten, gut testbaren Domäne**, sauber getrennten Verantwortlichkeiten und einer **klaren Adapterstruktur**.
-
-Die Trennung erlaubt zukünftig das Ersetzen der Datenbank, das Umstellen auf eine andere API oder die Einführung alternativer Zugriffspfade (z. B. GraphQL oder Mobile API), ohne die Kernlogik zu verändern.
