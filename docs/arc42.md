@@ -21,8 +21,6 @@ Die Anwendung bietet:
 - **Frontend mit interaktivem Dashboard**, dynamischem State und Validierung
 - **Geschützte Routen** für sensitive Bereiche (z. B. Profil, gespeicherte Rezepte)
 
----
-
 ## 1.2 Qualitätsziele
 
 | Ziel                  | Umsetzung                                                                 |
@@ -36,7 +34,6 @@ Die Anwendung bietet:
 | **Portabilität**        | Komplette Dockerisierung mit `.env`-Trennung von Dev/Prod                |
 | **Nachvollziehbarkeit** | Logging, konsistente Fehlercodes & Statusantworten                      |
 
----
 
 ## 1.3 Relevante Stakeholder und ihre Erwartungen
 
@@ -48,8 +45,8 @@ Die Anwendung bietet:
 | **Backend-Team** in Zukunft | Gut strukturierter, erweiterbarer Code mit klarer Abgrenzung von Verantwortungen |
 
 
----
-# 2. Randbedingungen
+
+## 2. Randbedingungen
 
 ## 2.1 Technische Einschränkungen
 
@@ -140,8 +137,6 @@ Die zentralen Architekturentscheidungen sind dokumentiert in folgenden ADRs:
 - [Datenbank und ORM](../docs/adr/database-adr.md)
 - [Architekturansatz (Ports & Adapters)](../docs/adr/architektur-adr.md)
 
----
-
 ## 4.1 Technologieentscheidungen
 
 
@@ -153,8 +148,6 @@ Die zentralen Architekturentscheidungen sind dokumentiert in folgenden ADRs:
 | **ORM**      | Prisma (typsicher, mit Migrationssystem)                                     |
 | **Datenbank**| PostgreSQL im Docker-Container                                               |
 | **Integration** | REST-Anbindung an Spoonacular API für externe Rezept- und Nährwertdaten   |
-
----
 
 ## 4.2 Architekturentscheidungen
 
@@ -173,7 +166,6 @@ Diese Architektur erleichtert:
 - **Austauschbarkeit** externer Komponenten, Adapter können getauscht werden
 - **Erweiterbarkeit** zB. durch alternative Datenquellen oder APIs
 
----
 
 ## 4.3 Einhaltung von Qualitätszielen
 
@@ -186,7 +178,6 @@ Diese Architektur erleichtert:
 | **Robustheit**            | Validierung, Logging, Fehler-Handling und Retry-Mechanismen |
 | **Nachvollziehbarkeit**   | Logging, standardisierte Fehlerrückgaben mit Codes und Messages |
 
----
 ## 4.4 Frontend-Architektur
 
 Das Frontend von *TrackTrainEat* folgt einer **Feature-basierten Struktur**, bei der jedes funktionale Modul (zB. Authentifizierung, Profil, Rezepte) in einem eigenen Verzeichnis gekapselt ist. Diese Aufteilung verbessert die Wartbarkeit. 
@@ -216,7 +207,7 @@ Dieses Kapitel beschreibt die wichtigsten Software-Bausteine des Systems *TrackT
 Die Anwendung besteht aus mehreren klar getrennten Schichten und Modulen, die teilweise der hexagonalen Architektur folgen. Dies ermöglicht eine hohe Modularität, gute Testbarkeit und Austauschbarkeit von Komponenten.
 
 Das System gliedert sich grob in:
----
+
 
 ## 5.2 Backend Whitebox
 
@@ -270,7 +261,6 @@ Die Pfeile im Diagramm zeigen den Aufruffluss:
 
 Dies entspricht dem Prinzip der Hexagonalen Architektur (Ports & Adapters), wobei der Service die Geschäftslogik kapselt und die Adapter die konkrete technische Umsetzung übernehmen.
 
----
 
 ## 5.3 Frontend Whitebox
 
@@ -288,7 +278,6 @@ Das Frontend besteht aus folgenden Komponenten, die den Nutzerfluss und UI-Funkt
 
 Das Frontend kommuniziert mit dem Backend über definierte REST-Endpunkte für Authentifizierung, Profilmanagement, Rezeptsuche und Speicherung.
 
----
 
 ## 5.4 Zusammenfassung
 
@@ -300,7 +289,6 @@ Das Design unterstützt Modularität, Testbarkeit und einfache Erweiterbarkeit d
 
 In diesem Kapitel wird das dynamische Verhalten des Systems anhand von Sequenzdiagrammen dargestellt. Die Diagramme zeigen die Abläufe und Interaktionen zwischen Benutzer, Frontend, Backend-Komponenten, Datenbanken und externen Systemen. Dabei wird der Fokus auf die wichtigsten Anwendungsfälle gelegt, um die Architektur und die Ablauflogik transparent und nachvollziehbar zu machen. Es handelt sich um viel Logik wodurch die Diagramme der Übersichthalber aufgeteilt wurden statt alles in einem. Das Error-handling wird hier ebenfalls nicht zu 100% betrachtet - da es mehr darum geht zu verstehen wie der Ablauf in Sequenzen ist!
 
----
 
 ## Registrierung
 
@@ -308,7 +296,6 @@ In diesem Kapitel wird das dynamische Verhalten des Systems anhand von Sequenzdi
 
 Der Registrierungs-Flow beschreibt, wie ein neuer Benutzer seine Daten (E-Mail und Passwort) an das Frontend sendet, welche diese an den AuthController weiterleitet. Der AuthService überprüft über das UserRepository, ob die E-Mail bereits existiert. Falls ja, wird ein Fehler zurückgegeben, andernfalls wird der Benutzer in der Datenbank gespeichert. Eine erfolgreiche Registrierung wird anschließend bestätigt.
 
----
 
 ## Login
 
@@ -316,7 +303,6 @@ Der Registrierungs-Flow beschreibt, wie ein neuer Benutzer seine Daten (E-Mail u
 
 Beim Login sendet der Benutzer seine Zugangsdaten an das Frontend, das sie an den AuthController weitergibt. Der AuthService prüft die Existenz des Benutzers und die Passwortgültigkeit via UserRepository. Bei falschen Zugangsdaten wird ein Fehler zurückgegeben, bei Erfolg wird ein JWT-Token erstellt und an das Frontend übermittelt.
 
----
 
 ## Rezept speichern
 
@@ -324,7 +310,7 @@ Beim Login sendet der Benutzer seine Zugangsdaten an das Frontend, das sie an de
 
 Der Benutzer fordert das Speichern eines Rezepts an. Das Frontend leitet diese Anfrage an den SavedRecipeController weiter, welcher den SavedRecipeService aufruft. Der Service fragt über den RecipePort (SpoonacularAdapter) die Rezeptdetails von der externen API ab. Nach erfolgreichem Abruf wird das Rezept im SavedRecipeRepository gespeichert. Fehler während der API-Abfrage oder beim Speichern werden an das Frontend kommuniziert und entsprechend behandelt.
 
----
+
 
 ## Profil erstellen/ändern
 
@@ -333,7 +319,7 @@ Der Benutzer fordert das Speichern eines Rezepts an. Das Frontend leitet diese A
 
 Der Nutzer gibt Profildaten ein oder ändert diese. Diese werden vom Frontend an den UserProfileController gesendet, der den ProfileService aufruft. Der Service validiert die Daten und speichert oder aktualisiert das Profil über den PostgresUserProfileAdapter in der Datenbank. Datenbankfehler, wie z.B. Unique-Constraint-Verstöße, werden als Fehler an den Nutzer zurückgegeben und entsprechend kommuniziert.
 
----
+
 
 ## Rezeptabruf und Mealplan-Generierung
 
@@ -342,7 +328,7 @@ Der Nutzer gibt Profildaten ein oder ändert diese. Diese werden vom Frontend an
 
 Das Frontend fordert einen Mealplan an, der Benutzerpräferenzen und UserId enthält. Der RecipeController ruft im RecipeService die Profilinformationen ab, berechnet Kalorien- und Proteinbedarf und fragt über den RecipePort (SpoonacularAdapter) passende Rezepte bei der externen API ab. Der Service erstellt den Mealplan, welcher an das Frontend zurückgegeben wird. Fehler beim API-Zugriff oder fehlende Profile werden erkannt und an den Nutzer weitergegeben.
 
----
+
 
 Diese Sequenzdiagramme bieten einen umfassenden Einblick in die Abläufe innerhalb des Backends, die Interaktion mit externen Diensten und der Datenbank sowie die Einbindung des Frontends. Somit ist das Kapitel 6 - Laufzeitsicht vollständig abgedeckt.
 
@@ -474,11 +460,11 @@ Diese Struktur macht die Anwendung modular, testbar und erweiterbar und ist zent
 - Loggingpunkte an strategischen Stellen (Start, Fehler, externe Anfragen)
 
 
----
+
 
 Diese Konzepte sichern eine einheitliche und wartbare Systemarchitektur und sind durchgängig in Frontend, Backend und Infrastruktur umgesetzt.
 
----
+
 
 ## 9. Architekturentscheidungen
 
@@ -522,7 +508,6 @@ Das Projekt setzt bewusst auf folgende Technologien:
 
 Diese Kombination wurde aufgrund ihrer modernen Tooling-Unterstützung, Entwicklerfreundlichkeit und klaren Dokumentation ausgewählt.
 
----
 
 ## 10. Qualitätsanforderungen
 
@@ -553,7 +538,6 @@ Die Anwendung **TrackTrainEat** zielt darauf ab, Benutzer:innen bei einer person
 
 In diesem Kapitel werden potenzielle Risiken sowie bereits bekannte technische Schulden des Systems **TrackTrainEat** dokumentiert. Diese Liste ist nach **Priorität** sortiert, um bei Weiterentwicklung oder Wartung gezielt adressiert zu werden.
 
----
 
 ### 🟥 Hochpriorisierte Risiken
 
@@ -564,8 +548,6 @@ In diesem Kapitel werden potenzielle Risiken sowie bereits bekannte technische S
 | **Fachlich** | Unflexible Nährwert-Logik | Die Berechnungen basieren derzeit auf einem statischen Algorithmus. Personalisierbare Ernährungsziele sind schwer skalierbar. | Refaktorierung mit flexiblen Regeldefinitionen für Profile & Ziele |
 | **Technisch** | Kein zentrales Error-Monitoring | Fehler werden lokal geloggt, aber nicht aggregiert oder überwacht. | Einführung von Logging- & Monitoring-Tools wie Sentry oder Logtail |
 
----
-
 
 ### Mittlere Priorität
 
@@ -575,7 +557,6 @@ In diesem Kapitel werden potenzielle Risiken sowie bereits bekannte technische S
 | **Architektur** | Enge Kopplung an Framework-DTOs    | In einzelnen Fällen sind Services noch eng an Framework-nahe Datenstrukturen gebunden. | Weiterer Einsatz von Mappingschichten oder reinen Domänenobjekten |
 | **Deployment**  | Keine produktionsnahe Stage        | Es existieren zwar CI/CD-Prozesse, aber kein vollwertiger Staging-Clone der Produktivumgebung. | Optionaler Aufbau einer dedizierten Staging-Umgebung zur Vorabvalidierung |
 
----
 
 ### Geringe Priorität / Technische Schulden
 
@@ -585,7 +566,6 @@ In diesem Kapitel werden potenzielle Risiken sowie bereits bekannte technische S
 | **Dokumentation** | ADRs nicht zentral eingebunden    | Die Architekturentscheidungen liegen lokal in Markdown-Dateien (`docs/adr`). | Integration über ReadTheDocs, Docusaurus oder ADR-Viewer-Tool planen |
 | **Testing**       | – *(kein Risiko)*                 |  Alle kritischen Komponenten sind durch Unit-, Integration- und E2E-Tests abgedeckt. | – |
 
----
 ## 12. Glossar
 
 | Begriff                 | Bedeutung                                                                 |
