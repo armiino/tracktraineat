@@ -17,9 +17,8 @@ nav:
   - Home: index.md
   - Arc42: arc42.md
   - Install: install.md
-  - C4-Modell: C4.md
   - SQS:
-      - Techstack: SQS/Techstack.md
+      - Techstack: SQS/techstack.md
       - C4: SQS/C4.md
       - Test-Strategie: SQS/test.md
       - Ausfallsicherheit: SQS/Ausfallsicherheit.md

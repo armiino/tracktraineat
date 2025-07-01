@@ -1,7 +1,11 @@
 # Track Train Eat
 
 Diese Readme dient aktuell als erläuterung der Idee und um Feinheiten zu dokumentieren
----
+
+Auf Read The Docs ist alles Dokumentiert von Install anleitung bishin zur arc42 doc!
+Read the docs für mehr Infos nutzen!
+
+🔗 [TrackTrainEat – Read the Docs](https://tracktraineat.readthedocs.io/en/latest/)
 
 ## Grundidee
 
